@@ -1,0 +1,48 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="formGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4E4C1;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8942C;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="stoneRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#C92A2A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A61E1E;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="400" fill="#FCF1E4"/>
+  <ellipse cx="200" cy="340" rx="120" ry="20" fill="#000000" opacity="0.12"/>
+
+  <!-- Ring band -->
+  <ellipse cx="200" cy="260" rx="110" ry="90" fill="none" stroke="url(#formGold)" stroke-width="35"/>
+
+  <!-- Large signet/seal on top -->
+  <rect x="160" y="90" width="80" height="70" rx="8" fill="url(#formGold)"/>
+  <rect x="165" y="95" width="70" height="60" rx="5" fill="#B8942C" opacity="0.3"/>
+
+  <!-- Law symbol (scales) -->
+  <g transform="translate(200, 125)">
+    <!-- Balance beam -->
+    <rect x="-25" y="-2" width="50" height="4" fill="#FFFFFF" opacity="0.8"/>
+    <!-- Left scale -->
+    <path d="M -20 0 L -25 12 L -15 12 Z" fill="#FFFFFF" opacity="0.8"/>
+    <!-- Right scale -->
+    <path d="M 20 0 L 15 12 L 25 12 Z" fill="#FFFFFF" opacity="0.8"/>
+    <!-- Center post -->
+    <rect x="-2" y="0" width="4" height="20" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="0" cy="22" r="3" fill="#FFFFFF" opacity="0.8"/>
+  </g>
+
+  <!-- Stone on side -->
+  <ellipse cx="145" cy="210" rx="8" ry="10" fill="url(#stoneRed)"/>
+  <circle cx="145" cy="208" r="2" fill="#FFFFFF" opacity="0.6"/>
+
+  <!-- Engravings on band -->
+  <line x1="100" y1="250" x2="140" y2="250" stroke="#B8942C" stroke-width="1" opacity="0.4"/>
+  <line x1="260" y1="250" x2="300" y2="250" stroke="#B8942C" stroke-width="1" opacity="0.4"/>
+
+  <!-- Shine -->
+  <path d="M 165 95 L 235 95" fill="none" stroke="#F4E4C1" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+</svg>

@@ -1,0 +1,29 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="whiteGoldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5F5F5;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E8E8E8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D0D0D0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="yellowAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4E4C1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="400" fill="#FCF1E4"/>
+  <ellipse cx="200" cy="320" rx="120" ry="20" fill="#000000" opacity="0.1"/>
+
+  <!-- White gold ring -->
+  <ellipse cx="200" cy="200" rx="120" ry="120" fill="none" stroke="url(#whiteGoldGradient)" stroke-width="40"/>
+
+  <!-- Yellow gold center line (friso) -->
+  <ellipse cx="200" cy="200" rx="120" ry="120" fill="none" stroke="url(#yellowAccent)" stroke-width="3"/>
+
+  <!-- Inner shadow -->
+  <ellipse cx="200" cy="200" rx="80" ry="80" fill="none" stroke="#C0C0C0" stroke-width="2" opacity="0.3"/>
+
+  <!-- Shine -->
+  <path d="M 130 150 Q 200 130 270 150" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" opacity="0.6"/>
+  <circle cx="160" cy="160" r="8" fill="#ffffff" opacity="0.4"/>
+</svg>
