@@ -35,9 +35,11 @@ export function Header() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <h1 className="font-heading text-3xl font-bold text-gold">
-              GO Alianças
-            </h1>
+            <img
+              src="/imagens/logo-transparente-nome.png"
+              alt="GO Alianças - Alianças de Casamento em Ouro 18k"
+              className="h-12 w-auto md:h-14"
+            />
           </Link>
 
           {/* Desktop Navigation */}

@@ -29,8 +29,12 @@ export function ProductCard({ product }: ProductCardProps) {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-beige">
-            <span className="font-heading text-2xl text-gold">GO</span>
+          <div className="flex h-full w-full items-center justify-center bg-beige p-8">
+            <img
+              src="/imagens/logo-transparente.png"
+              alt={product.name}
+              className="h-full w-full object-contain opacity-30"
+            />
           </div>
         )}
 

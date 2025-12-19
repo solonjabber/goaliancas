@@ -8,9 +8,11 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* About */}
           <div>
-            <h3 className="font-heading text-xl font-bold text-gold">
-              GO Alianças
-            </h3>
+            <img
+              src="/imagens/logo-transparente-nome.png"
+              alt="GO Alianças"
+              className="h-16 w-auto"
+            />
             <p className="mt-4 text-sm text-gray-600">
               Alianças de casamento e anéis de formatura em ouro 18k.
               Tradição, qualidade e excelência em Curitiba.

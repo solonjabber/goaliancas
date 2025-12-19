@@ -106,8 +106,12 @@ export default function ProductDetailPage() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-beige">
-                    <span className="font-heading text-8xl text-gold">GO</span>
+                  <div className="flex h-full w-full items-center justify-center bg-beige p-16">
+                    <img
+                      src="/imagens/logo-transparente.png"
+                      alt={product.name}
+                      className="h-full w-full object-contain opacity-30"
+                    />
                   </div>
                 )}
               </div>
