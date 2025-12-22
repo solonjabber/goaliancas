@@ -72,8 +72,8 @@ export function ProdutosContent() {
     (filters.finishes?.length || 0) > 0 ||
     (filters.stones?.length || 0) > 0
 
-  // Se results está vazio (primeira renderização), usar filteredProducts como fallback
-  const displayProducts = results.length > 0 ? results : filteredProducts
+  // Se há query ou filtros ativos, usar results. Caso contrário, usar filteredProducts
+  const displayProducts = query || hasActiveFilters ? results : filteredProducts
 
   // Contar filtros ativos
   const activeFilterCount =
