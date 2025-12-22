@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES2017",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "server.ts",
+    "custom-upload.ts",
+    "payload.config.ts",
+    "collections/**/*",
+    "scripts/**/*",
+    "lib/**/*"
+  ]
+}

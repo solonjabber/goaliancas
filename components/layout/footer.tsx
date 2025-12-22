@@ -11,7 +11,7 @@ export function Footer() {
             <img
               src="/imagens/logo-transparente-nome.png"
               alt="GO Alianças"
-              className="h-16 w-auto"
+              className="h-[65px] w-auto max-h-full"
             />
             <p className="mt-4 text-sm text-gray-600">
               Alianças de casamento e anéis de formatura em ouro 18k.

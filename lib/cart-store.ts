@@ -82,6 +82,16 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'cart-storage',
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        // Se a versão é diferente, retornar estado inicial
+        if (version !== 1) {
+          return {
+            items: []
+          }
+        }
+        return persistedState as any
+      }
     }
   )
 )

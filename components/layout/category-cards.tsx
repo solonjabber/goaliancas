@@ -1,38 +1,30 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { getCategories } from "@/lib/payload-api"
 
-const categories = [
-  {
-    name: "Alianças de Casamento",
-    description: "Eternize seu amor",
-    href: "/aliancas-casamento",
-    image: "bg-gradient-to-br from-beige to-mint",
-    icon: "💍",
-  },
-  {
-    name: "Alianças de Noivado",
-    description: "O início de tudo",
-    href: "/aliancas-noivado",
-    image: "bg-gradient-to-br from-mint to-blue-grey",
-    icon: "💎",
-  },
-  {
-    name: "Anéis",
-    description: "Elegância única",
-    href: "/aneis",
-    image: "bg-gradient-to-br from-gold-light to-beige",
-    icon: "✨",
-  },
-  {
-    name: "Anéis de Formatura",
-    description: "Conquista celebrada",
-    href: "/aneis-formatura",
-    image: "bg-gradient-to-br from-blue-grey to-beige",
-    icon: "🎓",
-  },
-]
+const categoryIcons: Record<string, string> = {
+  "aliancas-casamento": "💍",
+  "aliancas-noivado": "💎",
+  "aneis": "✨",
+  "aneis-formatura": "🎓",
+}
 
-export function CategoryCards() {
+const categoryGradients: Record<string, string> = {
+  "aliancas-casamento": "bg-gradient-to-br from-beige to-mint",
+  "aliancas-noivado": "bg-gradient-to-br from-mint to-blue-grey",
+  "aneis": "bg-gradient-to-br from-gold-light to-beige",
+  "aneis-formatura": "bg-gradient-to-br from-blue-grey to-beige",
+}
+
+const categoryDescriptions: Record<string, string> = {
+  "aliancas-casamento": "Eternize seu amor",
+  "aliancas-noivado": "O início de tudo",
+  "aneis": "Elegância única",
+  "aneis-formatura": "Conquista celebrada",
+}
+
+export async function CategoryCards() {
+  const categories = await getCategories()
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
@@ -46,21 +38,21 @@ export function CategoryCards() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {categories.map((category) => (
+          {categories.map((category: any) => (
             <Link
-              key={category.name}
-              href={category.href}
+              key={category.id}
+              href={`/produtos?category=${category.slug}`}
               className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg"
             >
-              <div className={`h-48 ${category.image} flex items-center justify-center`}>
-                <span className="text-6xl">{category.icon}</span>
+              <div className={`h-48 ${categoryGradients[category.slug] || 'bg-gradient-to-br from-beige to-gold-light'} flex items-center justify-center`}>
+                <span className="text-6xl">{categoryIcons[category.slug] || "💍"}</span>
               </div>
               <div className="p-6">
                 <h3 className="font-heading text-xl font-semibold text-gray-900 group-hover:text-gold">
                   {category.name}
                 </h3>
                 <p className="mt-2 text-sm text-gray-600">
-                  {category.description}
+                  {categoryDescriptions[category.slug] || category.description || "Confira nossas opções"}
                 </p>
                 <div className="mt-4 flex items-center text-sm font-medium text-gold">
                   Ver produtos

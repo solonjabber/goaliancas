@@ -1,10 +1,13 @@
 import { create } from 'zustand'
 import { Product, ProductCategory, MetalType, ProductFilters } from './types'
-import { mockProducts } from './mock-data'
+
+const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
 
 interface FilterState {
   filters: ProductFilters
   filteredProducts: Product[]
+  allProducts: Product[]
+  isLoading: boolean
   setCategory: (category: ProductCategory, checked: boolean) => void
   setMetalType: (metalType: MetalType, checked: boolean) => void
   setCollection: (collection: string, checked: boolean) => void
@@ -13,6 +16,7 @@ interface FilterState {
   toggleInStockOnly: () => void
   clearFilters: () => void
   applyFilters: () => void
+  loadProducts: () => Promise<void>
 }
 
 const initialFilters: ProductFilters = {
@@ -23,9 +27,47 @@ const initialFilters: ProductFilters = {
   searchQuery: '',
 }
 
+// Helper para mapear produtos do Payload
+function mapPayloadProduct(payloadProduct: any): Product {
+  return {
+    id: payloadProduct.id,
+    name: payloadProduct.name,
+    slug: payloadProduct.slug,
+    description: payloadProduct.description,
+    price: payloadProduct.price,
+    images: payloadProduct.gallery?.map((item: any) => item.media?.url || '') || [],
+    category: payloadProduct.category?.slug || '',
+    metalType: payloadProduct.material,
+    collection: payloadProduct.productCollection,
+    weight: payloadProduct.weight,
+    inStock: payloadProduct.inStock,
+    featured: payloadProduct.featured,
+    discount: payloadProduct.salePrice ? Math.round((1 - payloadProduct.salePrice / payloadProduct.price) * 100) : undefined,
+    specifications: [],
+    customizable: payloadProduct.allowCustomization,
+    keywords: [],
+    tags: payloadProduct.tags || [],
+  } as Product
+}
+
 export const useFilterStore = create<FilterState>((set, get) => ({
   filters: initialFilters,
-  filteredProducts: mockProducts,
+  filteredProducts: [],
+  allProducts: [],
+  isLoading: false,
+
+  loadProducts: async () => {
+    set({ isLoading: true })
+    try {
+      const response = await fetch(`${PAYLOAD_API_URL}/products?limit=100&where[status][equals]=published`)
+      const data = await response.json()
+      const products = (data?.docs || []).map(mapPayloadProduct)
+      set({ allProducts: products, filteredProducts: products, isLoading: false })
+    } catch (error) {
+      console.error('Erro ao carregar produtos:', error)
+      set({ isLoading: false })
+    }
+  },
 
   setCategory: (category, checked) => {
     set((state) => {
@@ -90,8 +132,8 @@ export const useFilterStore = create<FilterState>((set, get) => ({
   },
 
   applyFilters: () => {
-    const { filters } = get()
-    let products = [...mockProducts]
+    const { filters, allProducts } = get()
+    let products = [...allProducts]
 
     // Filter by categories
     if (filters.categories.length > 0) {

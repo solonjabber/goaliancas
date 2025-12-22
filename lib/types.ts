@@ -17,6 +17,17 @@ export interface Product {
   discount?: number
   specifications?: string[]
   customizable?: boolean
+  // Novos campos para busca avançada
+  keywords?: string[]
+  gender?: ProductGender
+  finish?: ProductFinish[]
+  stones?: ProductStone[]
+  hasEngraving?: boolean
+  availability?: ProductAvailability
+  popularity?: number
+  createdAt?: Date
+  tags?: string[]
+  searchScore?: number
 }
 
 export enum ProductCategory {
@@ -32,6 +43,34 @@ export enum MetalType {
   OURO_18K_ROSE = 'ouro-18k-rose',
 }
 
+export enum ProductGender {
+  MASCULINA = 'masculina',
+  FEMININA = 'feminina',
+  PAR = 'par',
+  UNISSEX = 'unissex',
+}
+
+export enum ProductFinish {
+  POLIDO = 'polido',
+  FOSCO = 'fosco',
+  DIAMANTADO = 'diamantado',
+  ESCOVADO = 'escovado',
+  TEXTURIZADO = 'texturizado',
+}
+
+export enum ProductStone {
+  SEM_PEDRA = 'sem-pedra',
+  DIAMANTE = 'diamante',
+  ZIRCONIA = 'zirconia',
+  BRILHANTE = 'brilhante',
+}
+
+export enum ProductAvailability {
+  PRONTA_ENTREGA = 'pronta-entrega',
+  SOB_ENCOMENDA = 'sob-encomenda',
+  PRE_VENDA = 'pre-venda',
+}
+
 // Filter Types
 export interface ProductFilters {
   categories: ProductCategory[]
@@ -43,6 +82,33 @@ export interface ProductFilters {
   collections: string[]
   inStockOnly: boolean
   searchQuery?: string
+  // Novos filtros avançados
+  genders?: ProductGender[]
+  widthRange?: {
+    min: number
+    max: number
+  }
+  finishes?: ProductFinish[]
+  stones?: ProductStone[]
+  hasEngraving?: boolean
+  customizableOnly?: boolean
+  availability?: ProductAvailability[]
+  sortBy?: 'relevance' | 'price-asc' | 'price-desc' | 'newest' | 'popular' | 'name'
+}
+
+// Search Synonyms Map
+export const SEARCH_SYNONYMS: Record<string, string[]> = {
+  'ouro': ['gold', 'au', 'dourado'],
+  'prata': ['silver', 'ag', 'prateado'],
+  'aliança': ['alianca', 'anel', 'ring', 'argola'],
+  'casamento': ['wedding', 'matrimonio', 'matrimônio', 'noiva', 'noivo'],
+  'noivado': ['engagement', 'compromisso', 'pedido'],
+  'diamante': ['diamond', 'brilhante', 'pedra'],
+  'feminina': ['mulher', 'feminino', 'woman', 'dama', 'senhora'],
+  'masculina': ['homem', 'masculino', 'man', 'cavalheiro', 'senhor'],
+  'par': ['casal', 'dupla', 'dois', '2'],
+  'fosco': ['fosca', 'matte', 'opaco'],
+  'polido': ['polida', 'brilhante', 'liso'],
 }
 
 // Cart Types

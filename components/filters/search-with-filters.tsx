@@ -1,22 +1,18 @@
 "use client"
 
 import * as React from "react"
-import { Search, SlidersHorizontal } from "lucide-react"
+import { SlidersHorizontal } from "lucide-react"
 import { useFilterStore } from "@/lib/filter-store"
+import { useSearchStore } from "@/lib/search-store"
 import { ProductFilters } from "./product-filters"
 import { Button } from "@/components/ui/button"
+import { SearchBar } from "@/components/search/search-bar"
 import * as Dialog from "@radix-ui/react-dialog"
 
 export function SearchWithFilters() {
-  const { filters, setSearchQuery, filteredProducts } = useFilterStore()
+  const { filters, filteredProducts } = useFilterStore()
+  const { results } = useSearchStore()
   const [isFilterOpen, setIsFilterOpen] = React.useState(false)
-  const [searchValue, setSearchValue] = React.useState(filters.searchQuery || '')
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setSearchValue(value)
-    setSearchQuery(value)
-  }
 
   const activeFilterCount =
     filters.categories.length +
@@ -24,18 +20,16 @@ export function SearchWithFilters() {
     filters.collections.length +
     (filters.inStockOnly ? 1 : 0)
 
+  const displayResults = results.length > 0 ? results : filteredProducts
+
   return (
     <div className="w-full">
       {/* Search Bar */}
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
+          <SearchBar
             placeholder="Buscar por alianças, anéis, coleções..."
-            value={searchValue}
-            onChange={handleSearchChange}
-            className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-4 text-sm focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold focus:ring-opacity-20"
+            showHistory={true}
           />
         </div>
 
@@ -72,7 +66,7 @@ export function SearchWithFilters() {
 
       {/* Result Count */}
       <div className="mt-2 text-sm text-gray-600">
-        {filteredProducts.length} {filteredProducts.length === 1 ? 'produto encontrado' : 'produtos encontrados'}
+        {displayResults.length} {displayResults.length === 1 ? 'produto encontrado' : 'produtos encontrados'}
       </div>
     </div>
   )

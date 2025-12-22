@@ -57,6 +57,30 @@
   --font-sans: var(--font-inter);
   --font-serif: var(--font-tenor);
   --font-heading: var(--font-tenor);
+
+  /* Custom Animations */
+  --animate-shimmer: shimmer 3s linear infinite;
+  --animate-twinkle: twinkle 2s ease-in-out infinite;
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(300%);
+    }
+  }
+
+  @keyframes twinkle {
+    0%, 100% {
+      opacity: 0.2;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.5);
+    }
+  }
 }
 
 body {

@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/footer"
 import { HeroBanner } from "@/components/layout/hero-banner"
 import { CategoryCards } from "@/components/layout/category-cards"
 import { FeaturedProducts } from "@/components/layout/featured-products"
+import { LuxuryShowcase } from "@/components/layout/luxury-showcase"
 import { Phone, Award, Shield, Heart } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -21,6 +22,9 @@ export default function Home() {
 
         {/* Featured Products */}
         <FeaturedProducts />
+
+        {/* Luxury Showcase Banner */}
+        <LuxuryShowcase />
 
         {/* Why Choose Us */}
         <section className="py-16">

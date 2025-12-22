@@ -1,13 +1,11 @@
-"use client"
-
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { getFeaturedProducts } from "@/lib/mock-data"
+import { getFeaturedProducts } from "@/lib/payload-api"
 import { ProductCard } from "@/components/product/product-card"
 import { Button } from "@/components/ui/button"
 
-export function FeaturedProducts() {
-  const featuredProducts = getFeaturedProducts().slice(0, 4)
+export async function FeaturedProducts() {
+  const featuredProducts = await getFeaturedProducts()
 
   return (
     <section className="bg-gray-50 py-16">

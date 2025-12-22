@@ -1,15 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { getProductBySlug, mockProducts } from "@/lib/mock-data"
 import { formatCurrency, calculateInstallment, getWhatsAppLink } from "@/lib/utils"
 import { useCartStore } from "@/lib/cart-store"
+import { useFilterStore } from "@/lib/filter-store"
+import { Product } from "@/lib/types"
 import {
   Heart,
   Share2,
@@ -22,14 +23,69 @@ import {
 } from "lucide-react"
 import { ProductCard } from "@/components/product/product-card"
 
+const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
+
 export default function ProductDetailPage() {
   const params = useParams()
   const slug = params.slug as string
-  const product = getProductBySlug(slug)
 
+  const [product, setProduct] = useState<Product | null>(null)
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const [isLoading, setIsLoading] = useState(true)
   const { addItem } = useCartStore()
+  const { allProducts } = useFilterStore()
+
+  // Buscar produto pelo slug
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setIsLoading(true)
+      try {
+        const response = await fetch(`${PAYLOAD_API_URL}/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1`)
+        const data = await response.json()
+
+        if (data?.docs && data.docs.length > 0) {
+          const payloadProduct = data.docs[0]
+          const mappedProduct: Product = {
+            id: payloadProduct.id,
+            name: payloadProduct.name,
+            slug: payloadProduct.slug,
+            description: payloadProduct.description,
+            price: payloadProduct.price,
+            images: payloadProduct.gallery?.map((item: any) => item.media?.url || '') || [],
+            category: payloadProduct.category?.slug || '',
+            metalType: payloadProduct.material,
+            collection: payloadProduct.productCollection,
+            weight: payloadProduct.weight,
+            inStock: payloadProduct.inStock,
+            featured: payloadProduct.featured,
+            discount: payloadProduct.salePrice ? Math.round((1 - payloadProduct.salePrice / payloadProduct.price) * 100) : undefined,
+            specifications: payloadProduct.specifications || [],
+            customizable: payloadProduct.allowCustomization,
+            keywords: [],
+            tags: payloadProduct.tags || [],
+          } as Product
+
+          setProduct(mappedProduct)
+
+          // Buscar produtos relacionados
+          if (allProducts.length > 0) {
+            const related = allProducts
+              .filter((p: Product) => p.category === mappedProduct.category && p.id !== mappedProduct.id)
+              .slice(0, 4)
+            setRelatedProducts(related)
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar produto:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchProduct()
+  }, [slug, allProducts])
 
   if (!product) {
     return (
@@ -57,10 +113,19 @@ export default function ProductDetailPage() {
   const whatsappMessage = `Olá! Tenho interesse no produto: ${product.name} - ${formatCurrency(finalPrice)}`
   const whatsappLink = getWhatsAppLink("41999999999", whatsappMessage)
 
-  // Related products
-  const relatedProducts = mockProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4)
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex flex-1 items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-600">Carregando produto...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-screen flex-col">

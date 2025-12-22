@@ -5,38 +5,74 @@ import Link from "next/link"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const banners = [
+const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
+
+// Banners padrão caso não haja dados no CMS
+const defaultBanners = [
   {
-    id: 1,
+    id: 'default-1',
     title: "Alianças de Casamento",
     subtitle: "Eternize seu amor com alianças em ouro 18k",
     description: "Design exclusivo e qualidade incomparável",
-    cta: "Ver Coleção",
-    href: "/aliancas-casamento",
+    ctaText: "Ver Coleção",
+    ctaLink: "/produtos?category=aliancas-casamento",
     bgColor: "from-beige to-mint",
   },
   {
-    id: 2,
+    id: 'default-2',
     title: "Anéis de Formatura",
     subtitle: "Conquista que merece ser celebrada",
     description: "Personalize com o símbolo do seu curso",
-    cta: "Personalize Agora",
-    href: "/aneis-formatura",
+    ctaText: "Personalize Agora",
+    ctaLink: "/produtos?category=aneis-formatura",
     bgColor: "from-blue-grey to-beige",
   },
   {
-    id: 3,
+    id: 'default-3',
     title: "Ouro 18k Certificado",
     subtitle: "Máxima pureza e durabilidade",
     description: "Peças que atravessam gerações",
-    cta: "Conhecer Produtos",
-    href: "/produtos",
+    ctaText: "Conhecer Produtos",
+    ctaLink: "/produtos",
     bgColor: "from-gold-light to-beige",
   },
 ]
 
 export function HeroBanner() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [banners, setBanners] = useState<any[]>(defaultBanners)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Buscar banners do Payload
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const response = await fetch(`${PAYLOAD_API_URL}/hero-banners?where[active][equals]=true&sort=order`)
+        const data = await response.json()
+
+        if (data?.docs && data.docs.length > 0) {
+          const formattedBanners = data.docs.map((banner: any) => ({
+            id: banner.id,
+            title: banner.title,
+            subtitle: banner.subtitle || '',
+            description: banner.description || '',
+            ctaText: banner.ctaText || 'Ver Mais',
+            ctaLink: banner.ctaLink || '/produtos',
+            bgColor: 'from-beige to-gold-light', // Pode customizar depois
+            imageUrl: banner.image?.url,
+          }))
+          setBanners(formattedBanners)
+        }
+      } catch (error) {
+        console.error('Erro ao carregar banners:', error)
+        // Mantém banners padrão em caso de erro
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchBanners()
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -44,7 +80,7 @@ export function HeroBanner() {
     }, 5000)
 
     return () => clearInterval(timer)
-  }, [])
+  }, [banners.length])
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % banners.length)
@@ -75,9 +111,9 @@ export function HeroBanner() {
                 <p className="text-xl text-gray-700">
                   {banner.description}
                 </p>
-                <Link href={banner.href}>
+                <Link href={banner.ctaLink}>
                   <Button size="lg" className="mt-4">
-                    {banner.cta}
+                    {banner.ctaText}
                   </Button>
                 </Link>
               </div>
