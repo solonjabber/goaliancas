@@ -39,40 +39,70 @@ app.use((req, res, next) => {
 // Servir arquivos estáticos da pasta media
 app.use('/media', express.static(path.join(__dirname, 'media')))
 
-// Endpoint customizado para upload de imagens
-app.post('/api/custom-upload', upload.single('file'), handleUpload)
-
-// Tratamento de erros global
-app.use((err: any, req: any, res: any, next: any) => {
-  console.error('\n❌ [ERROR] Global error handler triggered')
-  console.error('🔴 [ERROR] Error details:', {
-    message: err.message,
-    stack: err.stack,
-    path: req.path,
-    method: req.method
-  })
-
-  if (!res.headersSent) {
-    res.status(500).json({
-      error: 'Internal server error',
-      message: err.message,
-      details: process.env.NODE_ENV === 'development' ? err.stack : undefined
-    })
-  }
-})
-
 const start = async () => {
-  // Initialize Payload
-  await payload.init({
-    secret: process.env.PAYLOAD_SECRET!,
-    express: app,
-    onInit: () => {
-      console.log(`✅ Payload Admin: http://localhost:3000/admin`)
-    },
+  console.log('🔧 [DEBUG] Iniciando Payload...')
+  console.log('🔧 [DEBUG] PAYLOAD_SECRET:', process.env.PAYLOAD_SECRET ? 'Definido ✅' : 'AUSENTE ❌')
+  console.log('🔧 [DEBUG] MONGODB_URI:', process.env.MONGODB_URI ? 'Definido ✅' : 'AUSENTE ❌')
+  console.log('🔧 [DEBUG] NEXT_PUBLIC_SERVER_URL:', process.env.NEXT_PUBLIC_SERVER_URL || 'Usando fallback')
+
+  try {
+    // Initialize Payload
+    await payload.init({
+      secret: process.env.PAYLOAD_SECRET!,
+      express: app,
+      onInit: async () => {
+        console.log('✅ [PAYLOAD] Payload inicializado com sucesso!')
+        console.log('✅ [PAYLOAD] Admin disponível em: /admin')
+      },
+    })
+
+    console.log('✅ [DEBUG] Payload.init() completado com sucesso')
+
+    // Log das rotas registradas
+    const router = (app as any)._router
+    if (router && router.stack) {
+      console.log(`🔧 [DEBUG] Total de middlewares registrados: ${router.stack.length}`)
+      router.stack.forEach((layer: any, index: number) => {
+        if (layer.route) {
+          console.log(`🔧 [DEBUG] Rota ${index}: ${layer.route.path}`)
+        } else if (layer.name === 'router') {
+          console.log(`🔧 [DEBUG] Router ${index}: ${layer.regexp}`)
+        }
+      })
+    }
+  } catch (error: any) {
+    console.error('❌ [ERROR] Erro ao inicializar Payload:', error.message)
+    console.error('❌ [ERROR] Stack:', error.stack)
+    throw error
+  }
+
+  // Endpoint customizado para upload de imagens (depois do Payload)
+  app.post('/api/custom-upload', upload.single('file'), handleUpload)
+
+  // Tratamento de erros global (sempre por último!)
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error('\n❌ [ERROR] Global error handler triggered')
+    console.error('🔴 [ERROR] Error details:', {
+      message: err.message,
+      stack: err.stack,
+      path: req.path,
+      method: req.method
+    })
+
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: 'Internal server error',
+        message: err.message,
+        details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+      })
+    }
   })
 
-  app.listen(3000, async () => {
-    console.log('🚀 Server running on http://localhost:3000')
+  const port = parseInt(process.env.PORT || '3000', 10)
+
+  app.listen(port, '0.0.0.0', async () => {
+    console.log(`🚀 Server running on port ${port}`)
+    console.log(`✅ Payload Admin: http://localhost:${port}/admin`)
   })
 }
 

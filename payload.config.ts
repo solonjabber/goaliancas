@@ -17,12 +17,22 @@ export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
   admin: {
     user: 'users',
+    // Desabilitar admin UI em produção devido a limites de memória do Railway free plan
+    disable: process.env.DISABLE_PAYLOAD_ADMIN === 'true',
     bundler: webpackBundler(),
     meta: {
       titleSuffix: '- GO Alianças',
       favicon: '/favicon.ico',
       ogImage: '/og-image.jpg',
     },
+  },
+  onInit: async (payload) => {
+    console.log('🎉 [PAYLOAD] Payload completamente inicializado e pronto!')
+    if (process.env.DISABLE_PAYLOAD_ADMIN === 'true') {
+      console.log('ℹ️  [PAYLOAD] Admin UI desabilitado - API disponível em: /api')
+    } else {
+      console.log('🎉 [PAYLOAD] Admin panel disponível em: /admin')
+    }
   },
   editor: slateEditor({}),
   upload: {

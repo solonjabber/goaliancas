@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: goaliancas-payload-admin
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm run payload
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: PAYLOAD_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_SERVER_URL
+        sync: false
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
