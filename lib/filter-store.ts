@@ -78,6 +78,11 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     try {
       // Adicionar depth=1 para popular relacionamentos (categoria)
       const response = await fetch(`${PAYLOAD_API_URL}/products?limit=100&where[status][equals]=published&depth=1`)
+
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`)
+      }
+
       const data = await response.json()
 
       console.log('[LOAD_PRODUCTS] Produtos carregados:', data?.docs?.length)
@@ -90,8 +95,13 @@ export const useFilterStore = create<FilterState>((set, get) => ({
 
       set({ allProducts: products, filteredProducts: products, isLoading: false })
     } catch (error) {
-      console.error('Erro ao carregar produtos:', error)
-      set({ isLoading: false })
+      console.error('Erro ao carregar produtos do Payload, usando dados mock:', error)
+
+      // Fallback: carregar dados mock
+      const { PRODUCTS } = await import('./mock-data')
+      console.log('[LOAD_PRODUCTS] Usando dados mock:', PRODUCTS.length, 'produtos')
+
+      set({ allProducts: PRODUCTS, filteredProducts: PRODUCTS, isLoading: false })
     }
   },
 
