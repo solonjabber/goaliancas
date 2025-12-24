@@ -29,14 +29,31 @@ const initialFilters: ProductFilters = {
 
 // Helper para mapear produtos do Payload
 function mapPayloadProduct(payloadProduct: any): Product {
+  const PAYLOAD_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
+
+  // Mapear imagens
+  const images = payloadProduct.gallery?.map((item: any) => {
+    const media = item.media
+    if (!media) return ''
+    // Se media é um objeto com URL
+    if (typeof media === 'object' && media.url) {
+      return media.url.startsWith('http') ? media.url : `${PAYLOAD_URL}${media.url}`
+    }
+    // Se media é apenas um ID
+    if (typeof media === 'string') {
+      return `${PAYLOAD_URL}/media/${media}`
+    }
+    return ''
+  }).filter(Boolean) || []
+
   return {
     id: payloadProduct.id,
     name: payloadProduct.name,
     slug: payloadProduct.slug,
     description: payloadProduct.description,
     price: payloadProduct.price,
-    images: payloadProduct.gallery?.map((item: any) => item.media?.url || '') || [],
-    category: payloadProduct.category?.slug || '',
+    images,
+    category: payloadProduct.category?.slug || payloadProduct.category || '',
     metalType: payloadProduct.material,
     collection: payloadProduct.productCollection,
     weight: payloadProduct.weight,
@@ -59,9 +76,18 @@ export const useFilterStore = create<FilterState>((set, get) => ({
   loadProducts: async () => {
     set({ isLoading: true })
     try {
-      const response = await fetch(`${PAYLOAD_API_URL}/products?limit=100&where[status][equals]=published`)
+      // Adicionar depth=1 para popular relacionamentos (categoria)
+      const response = await fetch(`${PAYLOAD_API_URL}/products?limit=100&where[status][equals]=published&depth=1`)
       const data = await response.json()
+
+      console.log('[LOAD_PRODUCTS] Produtos carregados:', data?.docs?.length)
+      console.log('[LOAD_PRODUCTS] Exemplo de produto:', data?.docs?.[0])
+
       const products = (data?.docs || []).map(mapPayloadProduct)
+
+      console.log('[LOAD_PRODUCTS] Produtos mapeados:', products.length)
+      console.log('[LOAD_PRODUCTS] Exemplo mapeado:', products[0])
+
       set({ allProducts: products, filteredProducts: products, isLoading: false })
     } catch (error) {
       console.error('Erro ao carregar produtos:', error)

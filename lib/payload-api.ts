@@ -72,7 +72,7 @@ export async function getTestimonialsForHomepage() {
 export async function getProducts(options = {}) {
   const { category, featured = false, limit = 100, status = 'published' } = options as any
 
-  let query = `/products?limit=${limit}&where[status][equals]=${status}`
+  let query = `/products?limit=${limit}&where[status][equals]=${status}&depth=1`
 
   if (category) {
     query += `&where[category][equals]=${category}`
@@ -92,13 +92,13 @@ export async function getFeaturedProducts() {
 }
 
 export async function getProductBySlug(slug: string) {
-  const data = await fetchFromPayload(`/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1`)
+  const data = await fetchFromPayload(`/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1&depth=1`)
   const product = data?.docs?.[0]
   return product ? mapPayloadProduct(product) : null
 }
 
 export async function getProductsByCategory(categorySlug: string) {
-  const data = await fetchFromPayload(`/products?where[category.slug][equals]=${categorySlug}&where[status][equals]=published`)
+  const data = await fetchFromPayload(`/products?where[category.slug][equals]=${categorySlug}&where[status][equals]=published&depth=1`)
   const products = data?.docs || []
   return products.map(mapPayloadProduct)
 }
@@ -140,14 +140,28 @@ export function getImageUrl(media: any): string {
 
 // Converter produto do Payload para formato do frontend
 export function mapPayloadProduct(payloadProduct: any): any {
+  const images = payloadProduct.gallery?.map((item: any) => {
+    const media = item.media
+    if (!media) return ''
+    // Se media é um objeto com URL
+    if (typeof media === 'object' && media.url) {
+      return media.url.startsWith('http') ? media.url : `${PAYLOAD_API_URL}${media.url}`
+    }
+    // Se media é apenas um ID
+    if (typeof media === 'string') {
+      return `${PAYLOAD_API_URL}/media/${media}`
+    }
+    return ''
+  }).filter(Boolean) || []
+
   return {
     id: payloadProduct.id,
     name: payloadProduct.name,
     slug: payloadProduct.slug,
     description: payloadProduct.description,
     price: payloadProduct.price,
-    images: payloadProduct.gallery?.map((item: any) => getImageUrl(item.media)) || [],
-    category: payloadProduct.category?.slug || '',
+    images,
+    category: payloadProduct.category?.slug || payloadProduct.category || '',
     metalType: payloadProduct.material,
     collection: payloadProduct.productCollection,
     weight: payloadProduct.weight,
