@@ -52,7 +52,7 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
         const formData = new FormData()
         formData.append('file', file)
 
-        const res = await fetch('/api/admin/media', {
+        const res = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         })
@@ -91,7 +91,7 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
     if (confirm('Tem certeza que deseja remover esta imagem?')) {
       try {
         // Deletar do servidor
-        await fetch(`/api/admin/media?id=${image.media.id}`, {
+        await fetch(`/api/upload?id=${image.media.id}`, {
           method: 'DELETE',
         })
 
