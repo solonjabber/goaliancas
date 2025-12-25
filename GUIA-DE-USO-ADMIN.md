@@ -72,6 +72,18 @@ Após login, você verá:
 4. Aguarde a confirmação
 5. O produto aparecerá na lista
 
+**Editar Produto:**
+1. Na lista de produtos, clique em **"Editar"** no produto desejado
+2. Você será redirecionado para o formulário de edição
+3. Modifique os campos desejados:
+   - Nome, descrição, categoria
+   - Preços (regular e promocional)
+   - Estoque
+   - Especificações (metal, peso, largura)
+   - Opções (destaque, personalização)
+4. Clique em **"Salvar Alterações"**
+5. O produto será atualizado imediatamente
+
 **Deletar Produto:**
 1. Na lista de produtos, clique em **"Excluir"** no produto desejado
 2. Confirme a exclusão
@@ -100,13 +112,15 @@ Após login, você verá:
 - ✅ Dashboard com estatísticas em tempo real
 - ✅ Listar todos os produtos (com imagens, preços, estoque)
 - ✅ Adicionar novos produtos
+- ✅ Editar produtos existentes
 - ✅ Deletar produtos
 - ✅ Visualizar categorias
 - ✅ Interface responsiva (funciona em mobile/tablet/desktop)
+- ✅ Validação de formulários
+- ✅ Feedback visual de operações
 
 ## 🚧 Em Desenvolvimento
 
-- ⏳ Editar produtos existentes
 - ⏳ Upload de imagens de produtos
 - ⏳ CRUD completo de categorias
 - ⏳ Gestão de banners
@@ -183,7 +197,12 @@ Após login, você verá:
    - Validação de campos obrigatórios
    - Feedback visual
 
-5. **Categorias** (`/admin-custom/categorias`)
+5. **Editar Produto** (`/admin-custom/produtos/[id]`)
+   - Formulário completo pré-preenchido
+   - Todos os campos editáveis
+   - Validação e feedback visual
+
+6. **Categorias** (`/admin-custom/categorias`)
    - Lista simples
    - Preparado para expansão
 
@@ -252,6 +271,7 @@ Após login, você verá:
 
 1. **Teste completo**:
    - Adicione um produto de teste
+   - Edite o produto de teste
    - Verifique se aparece no site
    - Delete o produto de teste
 
@@ -261,8 +281,8 @@ Após login, você verá:
 
 3. **Expanda**:
    - Adicione upload de imagens
-   - Implemente edição de produtos
    - Adicione mais filtros e buscas
+   - Implemente gestão de categorias
 
 4. **Monitore**:
    - Configure alertas no Vercel
