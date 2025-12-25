@@ -52,7 +52,7 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
         const formData = new FormData()
         formData.append('file', file)
 
-        const uploadUrl = 'https://payload-api-production-9a40.up.railway.app/api/media'
+        const uploadUrl = '/api/admin/media'
         console.log('[ImageUpload] Fazendo upload:', {
           url: uploadUrl,
           fileName: file.name,
@@ -114,7 +114,7 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
     if (confirm('Tem certeza que deseja remover esta imagem?')) {
       try {
         // Deletar do servidor
-        await fetch(`https://payload-api-production-9a40.up.railway.app/api/media/${image.media.id}`, {
+        await fetch(`/api/admin/media?id=${image.media.id}`, {
           method: 'DELETE',
         })
 
