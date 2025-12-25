@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
       allowCustomization: body.allowCustomization || false,
       status: 'published', // Sempre publicar
       description: body.description || '',
+      gallery: body.gallery || [], // Galeria de imagens
     }
 
     console.log('[API] Enviando dados para Payload:', payloadData)

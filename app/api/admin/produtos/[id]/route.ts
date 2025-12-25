@@ -52,6 +52,7 @@ export async function PUT(
       featured: body.featured || false,
       allowCustomization: body.allowCustomization || false,
       description: body.description || '',
+      gallery: body.gallery || [], // Galeria de imagens
     }
 
     console.log('[API] Atualizando produto:', id, payloadData)
