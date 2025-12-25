@@ -5,8 +5,17 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://payload-api-producti
 export async function uploadImage(formData: FormData) {
   try {
     console.log('[Server Action] Iniciando upload de imagem')
+    console.log('[Server Action] FormData keys:', Array.from(formData.keys()))
 
     const file = formData.get('file') as File
+    console.log('[Server Action] File object:', {
+      exists: !!file,
+      type: typeof file,
+      name: file?.name,
+      size: file?.size,
+      fileType: file?.type
+    })
+
     if (!file) {
       console.error('[Server Action] Nenhum arquivo fornecido')
       return { error: 'Nenhum arquivo enviado' }
@@ -24,12 +33,23 @@ export async function uploadImage(formData: FormData) {
     console.log('[Server Action] Enviando para Payload:', {
       name: file.name,
       size: `${(file.size / 1024).toFixed(2)}KB`,
-      type: file.type
+      type: file.type,
+      payloadUrl: `${API_URL}/api/media`
     })
+
+    // Recriar FormData para garantir que está corretamente formatado
+    const uploadFormData = new FormData()
+    uploadFormData.append('file', file)
 
     const res = await fetch(`${API_URL}/api/media`, {
       method: 'POST',
-      body: formData,
+      body: uploadFormData,
+    })
+
+    console.log('[Server Action] Resposta do Payload:', {
+      status: res.status,
+      ok: res.ok,
+      headers: Object.fromEntries(res.headers.entries())
     })
 
     if (!res.ok) {
