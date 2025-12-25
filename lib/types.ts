@@ -38,9 +38,9 @@ export enum ProductCategory {
 }
 
 export enum MetalType {
-  OURO_18K_AMARELO = 'ouro-18k-amarelo',
-  OURO_18K_BRANCO = 'ouro-18k-branco',
-  OURO_18K_ROSE = 'ouro-18k-rose',
+  OURO_18K_AMARELO = 'ouro_18k',
+  OURO_18K_BRANCO = 'ouro_branco',
+  OURO_18K_ROSE = 'ouro_rose',
 }
 
 export enum ProductGender {

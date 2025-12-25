@@ -60,17 +60,17 @@ export function Header() {
               },
               {
                 label: "Ouro Amarelo",
-                href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-amarelo",
+                href: "/produtos?category=aliancas-de-casamento&metal=ouro_18k",
                 description: "Clássicas e tradicionais"
               },
               {
                 label: "Ouro Branco",
-                href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-branco",
+                href: "/produtos?category=aliancas-de-casamento&metal=ouro_branco",
                 description: "Modernas e elegantes"
               },
               {
                 label: "Ouro Rosé",
-                href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-rose",
+                href: "/produtos?category=aliancas-de-casamento&metal=ouro_rose",
                 description: "Românticas e exclusivas"
               },
               {
@@ -180,17 +180,17 @@ export function Header() {
                 },
                 {
                   label: "Ouro Amarelo",
-                  href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-amarelo",
+                  href: "/produtos?category=aliancas-de-casamento&metal=ouro_18k",
                   description: "Clássicas e tradicionais"
                 },
                 {
                   label: "Ouro Branco",
-                  href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-branco",
+                  href: "/produtos?category=aliancas-de-casamento&metal=ouro_branco",
                   description: "Modernas e elegantes"
                 },
                 {
                   label: "Ouro Rosé",
-                  href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-rose",
+                  href: "/produtos?category=aliancas-de-casamento&metal=ouro_rose",
                   description: "Românticas e exclusivas"
                 },
                 {
