@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://payload-api-production-9a40.up.railway.app'
+import { put, del } from '@vercel/blob'
 
 // Next.js App Router - Configuração de runtime
 export const runtime = 'nodejs'
@@ -27,45 +26,34 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('[API] Enviando imagem para Payload:', {
+    console.log('[API] Fazendo upload para Vercel Blob Storage:', {
       name: file.name,
       size: `${(file.size / 1024).toFixed(2)}KB`,
-      type: file.type,
-      targetUrl: `${API_URL}/api/media`
+      type: file.type
     })
 
-    // Recriar FormData para envio ao Payload
-    const payloadFormData = new FormData()
-    payloadFormData.append('file', file)
-
-    const res = await fetch(`${API_URL}/api/media`, {
-      method: 'POST',
-      body: payloadFormData,
+    // Upload para Vercel Blob Storage
+    const blob = await put(file.name, file, {
+      access: 'public',
+      addRandomSuffix: true,
     })
 
-    if (!res.ok) {
-      const contentType = res.headers.get('content-type')
-      let errorData
+    console.log('[API] Upload bem-sucedido:', {
+      url: blob.url,
+      pathname: blob.pathname
+    })
 
-      if (contentType?.includes('application/json')) {
-        errorData = await res.json()
-      } else {
-        const text = await res.text()
-        errorData = { message: text }
+    // Retornar formato compatível com o esperado pelo ImageUpload component
+    return NextResponse.json({
+      doc: {
+        id: blob.pathname, // Usar pathname como ID único
+        url: blob.url,
+        filename: file.name,
+        alt: '',
+        mimeType: file.type,
+        filesize: file.size,
       }
-
-      console.error('[API] Erro do Payload:', { status: res.status, errorData })
-
-      return NextResponse.json(
-        { error: 'Erro ao fazer upload da imagem', details: errorData },
-        { status: res.status }
-      )
-    }
-
-    const data = await res.json()
-    console.log('[API] Upload bem-sucedido:', { id: data.doc?.id, filename: data.doc?.filename })
-
-    return NextResponse.json(data)
+    })
   } catch (error: any) {
     console.error('[API] Erro ao fazer upload:', error)
     return NextResponse.json(
@@ -78,29 +66,21 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
+    const url = searchParams.get('id')
 
-    if (!id) {
+    if (!url) {
       return NextResponse.json(
-        { error: 'ID da imagem é obrigatório' },
+        { error: 'URL da imagem é obrigatória' },
         { status: 400 }
       )
     }
 
-    console.log('[API] Deletando imagem:', id)
+    console.log('[API] Deletando imagem:', url)
 
-    const res = await fetch(`${API_URL}/api/media/${id}`, {
-      method: 'DELETE',
-    })
+    // Deletar do Vercel Blob Storage
+    await del(url)
 
-    if (!res.ok) {
-      const data = await res.json()
-      return NextResponse.json(
-        { error: 'Erro ao deletar imagem', details: data },
-        { status: res.status }
-      )
-    }
-
+    console.log('[API] Imagem deletada com sucesso')
     return NextResponse.json({ success: true })
   } catch (error: any) {
     console.error('Erro ao deletar imagem:', error)
