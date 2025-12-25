@@ -52,13 +52,36 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
         const formData = new FormData()
         formData.append('file', file)
 
-        const res = await fetch('/api/upload', {
+        const uploadUrl = '/api/upload'
+        console.log('[ImageUpload] Fazendo upload:', {
+          url: uploadUrl,
+          fileName: file.name,
+          fileSize: `${(file.size / 1024).toFixed(2)}KB`,
+          fileType: file.type,
+          fullUrl: window.location.origin + uploadUrl
+        })
+
+        const res = await fetch(uploadUrl, {
           method: 'POST',
           body: formData,
         })
 
+        console.log('[ImageUpload] Resposta do servidor:', {
+          status: res.status,
+          statusText: res.statusText,
+          ok: res.ok,
+          url: res.url,
+          headers: Object.fromEntries(res.headers.entries())
+        })
+
         if (!res.ok) {
-          const errorData = await res.json()
+          let errorData
+          try {
+            errorData = await res.json()
+          } catch (e) {
+            errorData = { error: `HTTP ${res.status}: ${res.statusText}` }
+          }
+          console.error('[ImageUpload] Erro na resposta:', errorData)
           throw new Error(errorData.error || `Erro ao fazer upload de ${file.name}`)
         }
 
