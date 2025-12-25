@@ -39,15 +39,34 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
 
+    // Preparar dados no formato que o Payload espera
+    const payloadData = {
+      name: body.name,
+      price: body.price,
+      salePrice: body.salePrice || undefined,
+      metal: body.metal || '',
+      weight: body.weight || undefined,
+      width: body.width || undefined,
+      stock: body.stock,
+      category: body.category,
+      featured: body.featured || false,
+      allowCustomization: body.allowCustomization || false,
+      description: body.description || '',
+    }
+
+    console.log('[API] Atualizando produto:', id, payloadData)
+
     const res = await fetch(`${API_URL}/api/products/${id}`, {
-      method: 'PUT',
+      method: 'PATCH', // Payload usa PATCH para updates parciais
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(payloadData),
     })
 
     const data = await res.json()
+
+    console.log('[API] Resposta do Payload:', { status: res.status, data })
 
     if (!res.ok) {
       return NextResponse.json(
