@@ -27,8 +27,8 @@ export default function AdminDashboard() {
   const loadStats = async () => {
     try {
       const [produtosRes, categoriasRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`)
       ])
 
       const produtosData = await produtosRes.json()

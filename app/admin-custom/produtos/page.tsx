@@ -32,7 +32,7 @@ export default function AdminProdutos() {
 
   const loadProdutos = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?limit=100`)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?limit=100`)
       const data = await res.json()
       setProdutos(data.docs || [])
     } catch (error) {

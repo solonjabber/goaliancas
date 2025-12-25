@@ -39,12 +39,12 @@ export default function EditarProduto() {
   const loadData = async () => {
     try {
       // Carregar categorias
-      const categoriasRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories?limit=100`)
+      const categoriasRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories?limit=100`)
       const categoriasData = await categoriasRes.json()
       setCategorias(categoriasData.docs || [])
 
       // Carregar produto
-      const produtoRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`)
+      const produtoRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${params.id}`)
       const produto = await produtoRes.json()
 
       if (produtoRes.ok) {

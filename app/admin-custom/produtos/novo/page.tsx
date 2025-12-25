@@ -36,7 +36,7 @@ export default function NovoProduto() {
 
   const loadCategorias = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories?limit=100`)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories?limit=100`)
       const data = await res.json()
       setCategorias(data.docs || [])
     } catch (error) {
