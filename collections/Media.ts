@@ -9,6 +9,8 @@ export const Media: CollectionConfig = {
   access: {
     read: () => true,
     create: () => true, // Permitir upload de imagens sem autenticação para o admin customizado
+    update: () => true, // Permitir atualização de imagens
+    delete: () => true, // Permitir exclusão de imagens
   },
   upload: {
     staticDir: 'media',
