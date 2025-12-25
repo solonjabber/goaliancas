@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
+import ImageUpload, { GalleryImage } from '../../components/ImageUpload'
 
 export default function EditarProduto() {
   const router = useRouter()
@@ -10,6 +11,7 @@ export default function EditarProduto() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [categorias, setCategorias] = useState([])
+  const [gallery, setGallery] = useState<GalleryImage[]>([])
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -59,6 +61,21 @@ export default function EditarProduto() {
           featured: produto.featured || false,
           allowCustomization: produto.allowCustomization || false,
         })
+
+        // Carregar galeria de imagens
+        if (produto.gallery && Array.isArray(produto.gallery)) {
+          const galleryImages = produto.gallery.map((item: any) => ({
+            media: {
+              id: typeof item.media === 'object' ? item.media.id : item.media,
+              url: typeof item.media === 'object' ? item.media.url : '',
+              alt: typeof item.media === 'object' ? item.media.alt : '',
+              filename: typeof item.media === 'object' ? item.media.filename : '',
+            },
+            isPrimary: item.isPrimary || false,
+            id: item.id || (typeof item.media === 'object' ? item.media.id : item.media),
+          }))
+          setGallery(galleryImages)
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar dados:', error)
@@ -80,6 +97,10 @@ export default function EditarProduto() {
         stock: parseInt(formData.stock),
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
         width: formData.width ? parseFloat(formData.width) : undefined,
+        gallery: gallery.map(img => ({
+          media: img.media.id,
+          isPrimary: img.isPrimary,
+        })),
       }
 
       const res = await fetch(`/api/admin/produtos/${params.id}`, {
@@ -156,6 +177,15 @@ export default function EditarProduto() {
                 rows={4}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
               />
+            </div>
+
+            {/* Galeria de Imagens */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Galeria de Imagens
+                <span className="text-xs text-gray-500 ml-2">(Clique na estrela para definir imagem principal)</span>
+              </label>
+              <ImageUpload images={gallery} onChange={setGallery} maxImages={10} />
             </div>
 
             {/* Categoria */}

@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import ImageUpload, { GalleryImage } from '../../components/ImageUpload'
 
 export default function NovoProduto() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [categorias, setCategorias] = useState([])
+  const [gallery, setGallery] = useState<GalleryImage[]>([])
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -54,6 +56,10 @@ export default function NovoProduto() {
         stock: parseInt(formData.stock),
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
         width: formData.width ? parseFloat(formData.width) : undefined,
+        gallery: gallery.map(img => ({
+          media: img.media.id,
+          isPrimary: img.isPrimary,
+        })),
       }
 
       const res = await fetch('/api/admin/produtos', {
@@ -119,6 +125,15 @@ export default function NovoProduto() {
                 rows={4}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
               />
+            </div>
+
+            {/* Galeria de Imagens */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Galeria de Imagens
+                <span className="text-xs text-gray-500 ml-2">(Primeira imagem será a principal)</span>
+              </label>
+              <ImageUpload images={gallery} onChange={setGallery} maxImages={10} />
             </div>
 
             {/* Categoria */}
