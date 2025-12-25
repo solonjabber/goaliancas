@@ -30,12 +30,17 @@ export async function POST(request: NextRequest) {
     console.log('[API] Enviando imagem para Payload:', {
       name: file.name,
       size: `${(file.size / 1024).toFixed(2)}KB`,
-      type: file.type
+      type: file.type,
+      targetUrl: `${API_URL}/api/media`
     })
+
+    // Recriar FormData para envio ao Payload
+    const payloadFormData = new FormData()
+    payloadFormData.append('file', file)
 
     const res = await fetch(`${API_URL}/api/media`, {
       method: 'POST',
-      body: formData,
+      body: payloadFormData,
     })
 
     if (!res.ok) {
