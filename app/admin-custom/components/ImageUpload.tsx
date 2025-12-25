@@ -33,6 +33,18 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
       return
     }
 
+    // Verificar tamanho dos arquivos (max 4MB)
+    const MAX_SIZE = 4 * 1024 * 1024 // 4MB
+    const invalidFiles = Array.from(files).filter(file => file.size > MAX_SIZE)
+
+    if (invalidFiles.length > 0) {
+      const fileList = invalidFiles.map(f =>
+        `${f.name} (${(f.size / 1024 / 1024).toFixed(2)}MB)`
+      ).join('\n')
+      alert(`Os seguintes arquivos são muito grandes (máximo 4MB):\n\n${fileList}\n\nPor favor, reduza o tamanho das imagens antes de fazer upload.`)
+      return
+    }
+
     setUploading(true)
 
     try {
@@ -46,7 +58,8 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
         })
 
         if (!res.ok) {
-          throw new Error(`Erro ao fazer upload de ${file.name}`)
+          const errorData = await res.json()
+          throw new Error(errorData.error || `Erro ao fazer upload de ${file.name}`)
         }
 
         const data = await res.json()
@@ -64,9 +77,9 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
 
       const uploadedImages = await Promise.all(uploadPromises)
       onChange([...images, ...uploadedImages])
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao fazer upload:', error)
-      alert('Erro ao fazer upload das imagens')
+      alert(`Erro ao fazer upload das imagens:\n\n${error.message}`)
     } finally {
       setUploading(false)
     }
@@ -160,7 +173,7 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
                 : 'Clique para selecionar ou arraste imagens aqui'}
             </p>
             <p className="text-xs text-gray-500">
-              PNG, JPG, GIF até 10MB ({images.length}/{maxImages} imagens)
+              PNG, JPG, GIF até 4MB ({images.length}/{maxImages} imagens)
             </p>
           </div>
         </label>
