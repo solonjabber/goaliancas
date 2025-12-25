@@ -2,14 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://payload-api-production-9a40.up.railway.app'
 
-// Configuração para aumentar limite de body (max 4.5MB no Vercel)
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '4mb',
-    },
-  },
-}
+// Next.js App Router - Configuração de runtime
+export const runtime = 'nodejs'
+export const maxDuration = 30 // 30 segundos max
 
 export async function POST(request: NextRequest) {
   try {
