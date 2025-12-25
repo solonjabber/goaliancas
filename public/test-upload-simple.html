@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Upload Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+    </style>
+</head>
+<body>
+    <h1>Simple Upload Test (No JavaScript)</h1>
+    <p>This will submit directly to the API and show the raw response</p>
+
+    <form action="/api/admin/media" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <br><br>
+        <button type="submit">Upload Image</button>
+    </form>
+</body>
+</html>
