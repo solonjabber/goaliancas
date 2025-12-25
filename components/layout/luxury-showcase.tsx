@@ -10,19 +10,19 @@ const showcaseItems = [
     image: "/imagens/produtos/alianca-classica-amarela.jpg",
     title: "Alianças de Ouro Amarelo",
     subtitle: "Tradição e elegância que atravessam gerações",
-    link: "/produtos?category=aliancas-casamento&metal=ouro-18k-amarelo"
+    link: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-amarelo"
   },
   {
     image: "/imagens/produtos/alianca-diamante-branca.jpg",
     title: "Brilho Eterno dos Diamantes",
     subtitle: "Sofisticação em cada detalhe",
-    link: "/produtos?category=aliancas-casamento&stone=diamante"
+    link: "/produtos?category=aliancas-de-casamento&stone=diamante"
   },
   {
     image: "/imagens/produtos/alianca-moderna-rose.jpg",
     title: "Ouro Rosé Exclusivo",
     subtitle: "Romantismo e modernidade em perfeita harmonia",
-    link: "/produtos?category=aliancas-casamento&metal=ouro-18k-rose"
+    link: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-rose"
   }
 ]
 

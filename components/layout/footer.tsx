@@ -53,7 +53,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/aliancas-casamento"
+                  href="/aliancas-de-casamento"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
                   Alianças de Casamento
@@ -61,7 +61,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/aneis-formatura"
+                  href="/aneis-de-formatura"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
                   Anéis de Formatura

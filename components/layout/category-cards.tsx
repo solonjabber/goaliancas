@@ -3,24 +3,24 @@ import { ArrowRight } from "lucide-react"
 import { getCategories } from "@/lib/payload-api"
 
 const categoryIcons: Record<string, string> = {
-  "aliancas-casamento": "💍",
+  "aliancas-de-casamento": "💍",
   "aliancas-noivado": "💎",
   "aneis": "✨",
-  "aneis-formatura": "🎓",
+  "aneis-de-formatura": "🎓",
 }
 
 const categoryGradients: Record<string, string> = {
-  "aliancas-casamento": "bg-gradient-to-br from-beige to-mint",
+  "aliancas-de-casamento": "bg-gradient-to-br from-beige to-mint",
   "aliancas-noivado": "bg-gradient-to-br from-mint to-blue-grey",
   "aneis": "bg-gradient-to-br from-gold-light to-beige",
-  "aneis-formatura": "bg-gradient-to-br from-blue-grey to-beige",
+  "aneis-de-formatura": "bg-gradient-to-br from-blue-grey to-beige",
 }
 
 const categoryDescriptions: Record<string, string> = {
-  "aliancas-casamento": "Eternize seu amor",
+  "aliancas-de-casamento": "Eternize seu amor",
   "aliancas-noivado": "O início de tudo",
   "aneis": "Elegância única",
-  "aneis-formatura": "Conquista celebrada",
+  "aneis-de-formatura": "Conquista celebrada",
 }
 
 export async function CategoryCards() {

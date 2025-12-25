@@ -31,10 +31,10 @@ export interface Product {
 }
 
 export enum ProductCategory {
-  ALIANCAS_CASAMENTO = 'aliancas-casamento',
-  ALIANCAS_NOIVADO = 'aliancas-noivado',
+  ALIANCAS_CASAMENTO = 'aliancas-de-casamento',
+  ALIANCAS_NOIVADO = 'aliancas-de-noivado',
   ANEIS = 'aneis',
-  ANEIS_FORMATURA = 'aneis-formatura',
+  ANEIS_FORMATURA = 'aneis-de-formatura',
 }
 
 export enum MetalType {

@@ -15,7 +15,7 @@ const defaultBanners = [
     subtitle: "Eternize seu amor com alianças em ouro 18k",
     description: "Design exclusivo e qualidade incomparável",
     ctaText: "Ver Coleção",
-    ctaLink: "/produtos?category=aliancas-casamento",
+    ctaLink: "/produtos?category=aliancas-de-casamento",
     bgColor: "from-beige to-mint",
   },
   {
@@ -24,7 +24,7 @@ const defaultBanners = [
     subtitle: "Conquista que merece ser celebrada",
     description: "Personalize com o símbolo do seu curso",
     ctaText: "Personalize Agora",
-    ctaLink: "/produtos?category=aneis-formatura",
+    ctaLink: "/produtos?category=aneis-de-formatura",
     bgColor: "from-blue-grey to-beige",
   },
   {

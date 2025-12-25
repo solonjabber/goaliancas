@@ -55,27 +55,27 @@ export function Header() {
             items={[
               {
                 label: "Todas as Alianças",
-                href: "/produtos?category=aliancas-casamento",
+                href: "/produtos?category=aliancas-de-casamento",
                 description: "Ver todo o catálogo"
               },
               {
                 label: "Ouro Amarelo",
-                href: "/produtos?category=aliancas-casamento&metal=ouro-18k-amarelo",
+                href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-amarelo",
                 description: "Clássicas e tradicionais"
               },
               {
                 label: "Ouro Branco",
-                href: "/produtos?category=aliancas-casamento&metal=ouro-18k-branco",
+                href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-branco",
                 description: "Modernas e elegantes"
               },
               {
                 label: "Ouro Rosé",
-                href: "/produtos?category=aliancas-casamento&metal=ouro-18k-rose",
+                href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-rose",
                 description: "Românticas e exclusivas"
               },
               {
                 label: "Com Diamantes",
-                href: "/produtos?category=aliancas-casamento&stone=diamante",
+                href: "/produtos?category=aliancas-de-casamento&stone=diamante",
                 description: "Sofisticação e brilho"
               },
             ]}
@@ -87,27 +87,27 @@ export function Header() {
             items={[
               {
                 label: "Todos os Anéis",
-                href: "/produtos?category=aneis-formatura",
+                href: "/produtos?category=aneis-de-formatura",
                 description: "Ver todo o catálogo"
               },
               {
                 label: "Direito",
-                href: "/produtos?category=aneis-formatura&collection=Formatura Direito",
+                href: "/produtos?category=aneis-de-formatura&collection=Formatura Direito",
                 description: "Cursos de Direito"
               },
               {
                 label: "Medicina",
-                href: "/produtos?category=aneis-formatura&collection=Formatura Medicina",
+                href: "/produtos?category=aneis-de-formatura&collection=Formatura Medicina",
                 description: "Cursos de Medicina"
               },
               {
                 label: "Engenharia",
-                href: "/produtos?category=aneis-formatura&collection=Formatura Engenharia",
+                href: "/produtos?category=aneis-de-formatura&collection=Formatura Engenharia",
                 description: "Cursos de Engenharia"
               },
               {
                 label: "Administração",
-                href: "/produtos?category=aneis-formatura&collection=Formatura Administração",
+                href: "/produtos?category=aneis-de-formatura&collection=Formatura Administração",
                 description: "Cursos de Administração"
               },
             ]}
@@ -175,27 +175,27 @@ export function Header() {
               items={[
                 {
                   label: "Todas as Alianças",
-                  href: "/produtos?category=aliancas-casamento",
+                  href: "/produtos?category=aliancas-de-casamento",
                   description: "Ver todo o catálogo"
                 },
                 {
                   label: "Ouro Amarelo",
-                  href: "/produtos?category=aliancas-casamento&metal=ouro-18k-amarelo",
+                  href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-amarelo",
                   description: "Clássicas e tradicionais"
                 },
                 {
                   label: "Ouro Branco",
-                  href: "/produtos?category=aliancas-casamento&metal=ouro-18k-branco",
+                  href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-branco",
                   description: "Modernas e elegantes"
                 },
                 {
                   label: "Ouro Rosé",
-                  href: "/produtos?category=aliancas-casamento&metal=ouro-18k-rose",
+                  href: "/produtos?category=aliancas-de-casamento&metal=ouro-18k-rose",
                   description: "Românticas e exclusivas"
                 },
                 {
                   label: "Com Diamantes",
-                  href: "/produtos?category=aliancas-casamento&stone=diamante",
+                  href: "/produtos?category=aliancas-de-casamento&stone=diamante",
                   description: "Sofisticação e brilho"
                 },
               ]}
@@ -206,27 +206,27 @@ export function Header() {
               items={[
                 {
                   label: "Todos os Anéis",
-                  href: "/produtos?category=aneis-formatura",
+                  href: "/produtos?category=aneis-de-formatura",
                   description: "Ver todo o catálogo"
                 },
                 {
                   label: "Direito",
-                  href: "/produtos?category=aneis-formatura&collection=Formatura Direito",
+                  href: "/produtos?category=aneis-de-formatura&collection=Formatura Direito",
                   description: "Cursos de Direito"
                 },
                 {
                   label: "Medicina",
-                  href: "/produtos?category=aneis-formatura&collection=Formatura Medicina",
+                  href: "/produtos?category=aneis-de-formatura&collection=Formatura Medicina",
                   description: "Cursos de Medicina"
                 },
                 {
                   label: "Engenharia",
-                  href: "/produtos?category=aneis-formatura&collection=Formatura Engenharia",
+                  href: "/produtos?category=aneis-de-formatura&collection=Formatura Engenharia",
                   description: "Cursos de Engenharia"
                 },
                 {
                   label: "Administração",
-                  href: "/produtos?category=aneis-formatura&collection=Formatura Administração",
+                  href: "/produtos?category=aneis-de-formatura&collection=Formatura Administração",
                   description: "Cursos de Administração"
                 },
               ]}
