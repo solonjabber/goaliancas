@@ -4,10 +4,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https:/
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     const res = await fetch(`${API_URL}/api/products/${id}`, {
       method: 'DELETE',
@@ -33,10 +33,10 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
 
     const res = await fetch(`${API_URL}/api/products/${id}`, {
