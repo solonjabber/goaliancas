@@ -2,16 +2,17 @@
 
 import { useState } from 'react'
 import { Upload, X, Star, Loader2, Image as ImageIcon } from 'lucide-react'
+import { uploadImage, deleteImage } from '../actions/upload'
 
 export interface GalleryImage {
   media: {
     id: string
     url: string
     alt?: string
-    filename: string
+    filename?: string
   }
   isPrimary: boolean
-  id?: string
+  id: string
 }
 
 interface ImageUploadProps {
@@ -22,7 +23,7 @@ interface ImageUploadProps {
 
 export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
-  const [dragOver, setDragOver] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
 
   const handleFileSelect = async (files: FileList | null) => {
     if (!files || files.length === 0) return
@@ -52,49 +53,31 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
         const formData = new FormData()
         formData.append('file', file)
 
-        const uploadUrl = '/upload-media'
-        console.log('[ImageUpload] Fazendo upload:', {
-          url: uploadUrl,
+        console.log('[ImageUpload] Fazendo upload via Server Action:', {
           fileName: file.name,
           fileSize: `${(file.size / 1024).toFixed(2)}KB`,
-          fileType: file.type,
-          fullUrl: window.location.origin + uploadUrl
+          fileType: file.type
         })
 
-        const res = await fetch(uploadUrl, {
-          method: 'POST',
-          body: formData,
-        })
+        // Usar Server Action ao invés de fetch
+        const result = await uploadImage(formData)
 
-        console.log('[ImageUpload] Resposta do servidor:', {
-          status: res.status,
-          statusText: res.statusText,
-          ok: res.ok,
-          url: res.url,
-          headers: Object.fromEntries(res.headers.entries())
-        })
-
-        if (!res.ok) {
-          let errorData
-          try {
-            errorData = await res.json()
-          } catch (e) {
-            errorData = { error: `HTTP ${res.status}: ${res.statusText}` }
-          }
-          console.error('[ImageUpload] Erro na resposta:', errorData)
-          throw new Error(errorData.error || `Erro ao fazer upload de ${file.name}`)
+        if (result.error) {
+          console.error('[ImageUpload] Erro no upload:', result)
+          throw new Error(result.error)
         }
 
-        const data = await res.json()
+        console.log('[ImageUpload] Upload bem-sucedido:', result.data)
+
         return {
           media: {
-            id: data.doc.id,
-            url: data.doc.url,
-            alt: data.doc.alt || '',
-            filename: data.doc.filename,
+            id: result.data.id,
+            url: result.data.url,
+            alt: result.data.alt || '',
+            filename: result.data.filename,
           },
-          isPrimary: images.length === 0, // Primeira imagem é principal
-          id: data.doc.id,
+          isPrimary: images.length === 0,
+          id: result.data.id,
         }
       })
 
@@ -113,10 +96,12 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
 
     if (confirm('Tem certeza que deseja remover esta imagem?')) {
       try {
-        // Deletar do servidor
-        await fetch(`/upload-media?id=${image.media.id}`, {
-          method: 'DELETE',
-        })
+        // Deletar usando Server Action
+        const result = await deleteImage(image.media.id)
+
+        if (result.error) {
+          throw new Error(result.error)
+        }
 
         // Remover da lista
         const newImages = images.filter((_, i) => i !== index)
@@ -129,7 +114,7 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
         onChange(newImages)
       } catch (error) {
         console.error('Erro ao remover imagem:', error)
-        alert('Erro ao remover imagem')
+        alert('Erro ao remover imagem. Tente novamente.')
       }
     }
   }
@@ -148,10 +133,24 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
     onChange(newImages)
   }
 
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true)
+    } else if (e.type === 'dragleave') {
+      setDragActive(false)
+    }
+  }
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
-    setDragOver(false)
-    handleFileSelect(e.dataTransfer.files)
+    e.stopPropagation()
+    setDragActive(false)
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileSelect(e.dataTransfer.files)
+    }
   }
 
   return (
@@ -159,15 +158,11 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
       {/* Upload Area */}
       <div
         className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-          dragOver
-            ? 'border-amber-500 bg-amber-50'
-            : 'border-gray-300 hover:border-amber-400'
-        }`}
-        onDragOver={(e) => {
-          e.preventDefault()
-          setDragOver(true)
-        }}
-        onDragLeave={() => setDragOver(false)}
+          dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+        } ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
         onDrop={handleDrop}
       >
         <input
@@ -177,98 +172,89 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
           multiple
           accept="image/*"
           onChange={(e) => handleFileSelect(e.target.files)}
-          disabled={uploading || images.length >= maxImages}
+          disabled={uploading}
         />
-
         <label
           htmlFor="image-upload"
-          className={`cursor-pointer ${uploading || images.length >= maxImages ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className="cursor-pointer flex flex-col items-center"
         >
-          <div className="flex flex-col items-center gap-2">
-            {uploading ? (
-              <Loader2 className="h-10 w-10 text-amber-600 animate-spin" />
-            ) : (
-              <Upload className="h-10 w-10 text-gray-400" />
-            )}
-            <p className="text-sm font-medium text-gray-700">
-              {uploading
-                ? 'Enviando imagens...'
-                : 'Clique para selecionar ou arraste imagens aqui'}
-            </p>
-            <p className="text-xs text-gray-500">
-              PNG, JPG, GIF até 4MB ({images.length}/{maxImages} imagens)
-            </p>
-          </div>
+          {uploading ? (
+            <>
+              <Loader2 className="h-12 w-12 text-gray-400 mb-4 animate-spin" />
+              <p className="text-sm text-gray-600">Fazendo upload...</p>
+            </>
+          ) : (
+            <>
+              <Upload className="h-12 w-12 text-gray-400 mb-4" />
+              <p className="text-sm text-gray-600 mb-2">
+                <span className="font-medium text-blue-600">Clique para enviar</span> ou arraste e solte
+              </p>
+              <p className="text-xs text-gray-500">
+                PNG, JPG, GIF até 4MB (máximo {maxImages} imagens)
+              </p>
+            </>
+          )}
         </label>
       </div>
 
-      {/* Image Gallery */}
+      {/* Images Grid */}
       {images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {images.map((image, index) => (
             <div
-              key={image.id || index}
-              className={`relative group border-2 rounded-lg overflow-hidden ${
-                image.isPrimary ? 'border-amber-500' : 'border-gray-200'
-              }`}
+              key={image.id}
+              className="relative group border rounded-lg overflow-hidden"
             >
               {/* Image */}
-              <div className="aspect-square bg-gray-100 relative">
-                <img
-                  src={image.media.url}
-                  alt={image.media.alt || `Imagem ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-
-                {/* Primary Badge */}
-                {image.isPrimary && (
-                  <div className="absolute top-2 left-2 bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
-                    <Star className="h-3 w-3 fill-current" />
-                    Principal
-                  </div>
+              <div className="aspect-square bg-gray-100 flex items-center justify-center">
+                {image.media.url ? (
+                  <img
+                    src={image.media.url}
+                    alt={image.media.alt || 'Imagem do produto'}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <ImageIcon className="h-12 w-12 text-gray-300" />
                 )}
+              </div>
 
-                {/* Actions Overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                  {!image.isPrimary && (
-                    <button
-                      onClick={() => handleSetPrimary(index)}
-                      className="bg-white text-gray-700 p-2 rounded-full hover:bg-amber-500 hover:text-white transition-colors"
-                      title="Definir como principal"
-                    >
-                      <Star className="h-4 w-4" />
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleRemoveImage(index)}
-                    className="bg-white text-gray-700 p-2 rounded-full hover:bg-red-500 hover:text-white transition-colors"
-                    title="Remover imagem"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
+              {/* Badge de Imagem Principal */}
+              {image.isPrimary && (
+                <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                  <Star className="h-3 w-3" />
+                  Principal
                 </div>
+              )}
+
+              {/* Actions Overlay */}
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity flex items-center justify-center gap-2">
+                <button
+                  onClick={() => handleSetPrimary(index)}
+                  className="opacity-0 group-hover:opacity-100 bg-white text-gray-700 px-3 py-1 rounded text-xs font-medium hover:bg-gray-100 transition-all"
+                  disabled={image.isPrimary}
+                >
+                  {image.isPrimary ? 'Principal' : 'Definir como principal'}
+                </button>
+                <button
+                  onClick={() => handleRemoveImage(index)}
+                  className="opacity-0 group-hover:opacity-100 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-all"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
 
               {/* Alt Text Input */}
               <div className="p-2 bg-white">
                 <input
                   type="text"
-                  placeholder="Texto alternativo (opcional)"
+                  placeholder="Texto alternativo (alt)"
                   value={image.media.alt || ''}
                   onChange={(e) => handleUpdateAlt(index, e.target.value)}
-                  className="w-full text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-amber-500"
+                  className="w-full text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
           ))}
-        </div>
-      )}
-
-      {/* Empty State */}
-      {images.length === 0 && !uploading && (
-        <div className="text-center py-8 border border-dashed border-gray-300 rounded-lg">
-          <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-          <p className="text-sm text-gray-500">Nenhuma imagem adicionada ainda</p>
         </div>
       )}
     </div>
