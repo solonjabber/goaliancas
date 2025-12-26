@@ -26,13 +26,13 @@ async function fetchFromPayload(endpoint: string, options = {}) {
 
 // Hero Banners
 export async function getHeroBanners() {
-  const data = await fetchFromPayload('/hero-banners?where[active][equals]=true&sort=order')
+  const data = await fetchFromPayload('/api/hero-banners?where[active][equals]=true&sort=order')
   return data?.docs || []
 }
 
 // Site Settings (retorna o primeiro documento)
 export async function getSiteSettings() {
-  const data = await fetchFromPayload('/site-settings?limit=1')
+  const data = await fetchFromPayload('/api/site-settings?limit=1')
   return data?.docs?.[0] || null
 }
 
@@ -40,7 +40,7 @@ export async function getSiteSettings() {
 export async function getTestimonials(options = {}) {
   const { featured = false, approved = true, limit = 100 } = options as any
 
-  let query = `/testimonials?limit=${limit}`
+  let query = `/api/testimonials?limit=${limit}`
 
   if (approved) {
     query += '&where[approved][equals]=true'
@@ -59,12 +59,12 @@ export async function getFeaturedTestimonials() {
 }
 
 export async function getTestimonialsForAbout() {
-  const data = await fetchFromPayload('/testimonials?where[displayOnAboutPage][equals]=true&where[approved][equals]=true&limit=3')
+  const data = await fetchFromPayload('/api/testimonials?where[displayOnAboutPage][equals]=true&where[approved][equals]=true&limit=3')
   return data?.docs || []
 }
 
 export async function getTestimonialsForHomepage() {
-  const data = await fetchFromPayload('/testimonials?where[displayOnHomepage][equals]=true&where[approved][equals]=true&limit=3')
+  const data = await fetchFromPayload('/api/testimonials?where[displayOnHomepage][equals]=true&where[approved][equals]=true&limit=3')
   return data?.docs || []
 }
 
@@ -72,7 +72,7 @@ export async function getTestimonialsForHomepage() {
 export async function getProducts(options = {}) {
   const { category, featured = false, limit = 100, status = 'published' } = options as any
 
-  let query = `/products?limit=${limit}&where[status][equals]=${status}&depth=1`
+  let query = `/api/products?limit=${limit}&where[status][equals]=${status}&depth=1`
 
   if (category) {
     query += `&where[category][equals]=${category}`
@@ -92,36 +92,36 @@ export async function getFeaturedProducts() {
 }
 
 export async function getProductBySlug(slug: string) {
-  const data = await fetchFromPayload(`/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1&depth=1`)
+  const data = await fetchFromPayload(`/api/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1&depth=1`)
   const product = data?.docs?.[0]
   return product ? mapPayloadProduct(product) : null
 }
 
 export async function getProductsByCategory(categorySlug: string) {
-  const data = await fetchFromPayload(`/products?where[category.slug][equals]=${categorySlug}&where[status][equals]=published&depth=1`)
+  const data = await fetchFromPayload(`/api/products?where[category.slug][equals]=${categorySlug}&where[status][equals]=published&depth=1`)
   const products = data?.docs || []
   return products.map(mapPayloadProduct)
 }
 
 // Categories
 export async function getCategories() {
-  const data = await fetchFromPayload('/categories')
+  const data = await fetchFromPayload('/api/categories')
   return data?.docs || []
 }
 
 export async function getFeaturedCategories() {
-  const data = await fetchFromPayload('/categories?where[featured][equals]=true')
+  const data = await fetchFromPayload('/api/categories?where[featured][equals]=true')
   return data?.docs || []
 }
 
 export async function getCategoryBySlug(slug: string) {
-  const data = await fetchFromPayload(`/categories?where[slug][equals]=${slug}&limit=1`)
+  const data = await fetchFromPayload(`/api/categories?where[slug][equals]=${slug}&limit=1`)
   return data?.docs?.[0] || null
 }
 
 // Media
 export async function getMediaById(id: string) {
-  const data = await fetchFromPayload(`/media/${id}`)
+  const data = await fetchFromPayload(`/api/media/${id}`)
   return data || null
 }
 
@@ -131,7 +131,7 @@ export function getImageUrl(media: any): string {
 
   if (typeof media === 'string') {
     // Se for ID, retorna URL da API
-    return `${PAYLOAD_API_URL}/media/${media}`
+    return `${PAYLOAD_API_URL}/api/media/${media}`
   }
 
   // Se for objeto com URL
@@ -149,7 +149,7 @@ export function mapPayloadProduct(payloadProduct: any): any {
     }
     // Se media é apenas um ID
     if (typeof media === 'string') {
-      return `${PAYLOAD_API_URL}/media/${media}`
+      return `${PAYLOAD_API_URL}/api/media/${media}`
     }
     return ''
   }).filter(Boolean) || []
