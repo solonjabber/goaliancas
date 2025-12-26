@@ -48,6 +48,7 @@ export async function PUT(
     console.log('[API-UPDATE] Dados recebidos:', body)
 
     // Preparar dados no formato que o Payload espera
+    // NOTA: Não enviamos gallery porque usamos Vercel Blob Storage (externo ao Payload)
     const payloadData = {
       name: body.name,
       price: body.price,
@@ -60,7 +61,7 @@ export async function PUT(
       featured: body.featured || false,
       allowCustomization: body.allowCustomization || false,
       description: body.description || '',
-      gallery: body.gallery || [], // Galeria de imagens
+      // gallery não é enviada ao Payload - gerenciada separadamente via Vercel Blob
     }
 
     console.log('[API-UPDATE] Dados preparados para Payload:')
@@ -103,7 +104,28 @@ export async function PUT(
       )
     }
 
-    console.log('[API-UPDATE] Produto atualizado com sucesso')
+    console.log('[API-UPDATE] Produto atualizado com sucesso no Payload')
+
+    // Salvar gallery separadamente (via Vercel Blob Storage)
+    if (body.gallery) {
+      console.log('[API-UPDATE] Salvando gallery separadamente...')
+      try {
+        const galleryResponse = await fetch(`${request.url}/gallery`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gallery: body.gallery }),
+        })
+
+        if (!galleryResponse.ok) {
+          console.error('[API-UPDATE] Erro ao salvar gallery:', await galleryResponse.text())
+        } else {
+          console.log('[API-UPDATE] Gallery salva com sucesso')
+        }
+      } catch (error) {
+        console.error('[API-UPDATE] Erro ao salvar gallery:', error)
+      }
+    }
+
     return NextResponse.json(data)
   } catch (error: any) {
     console.error('[API-UPDATE] Erro ao atualizar produto:', error)

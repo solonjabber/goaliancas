@@ -62,19 +62,17 @@ export default function EditarProduto() {
           allowCustomization: produto.allowCustomization || false,
         })
 
-        // Carregar galeria de imagens
-        if (produto.gallery && Array.isArray(produto.gallery)) {
-          const galleryImages = produto.gallery.map((item: any) => ({
-            media: {
-              id: typeof item.media === 'object' ? item.media.id : item.media,
-              url: typeof item.media === 'object' ? item.media.url : '',
-              alt: typeof item.media === 'object' ? item.media.alt : '',
-              filename: typeof item.media === 'object' ? item.media.filename : '',
-            },
-            isPrimary: item.isPrimary || false,
-            id: item.id || (typeof item.media === 'object' ? item.media.id : item.media),
-          }))
-          setGallery(galleryImages)
+        // Carregar galeria de imagens da rota separada
+        try {
+          const galleryRes = await fetch(`/api/admin/produtos/${params.id}/gallery`)
+          if (galleryRes.ok) {
+            const galleryData = await galleryRes.json()
+            if (galleryData.gallery && Array.isArray(galleryData.gallery)) {
+              setGallery(galleryData.gallery)
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao carregar gallery:', error)
         }
       }
     } catch (error) {
