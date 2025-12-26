@@ -23,7 +23,9 @@ import {
 } from "lucide-react"
 import { ProductCard } from "@/components/product/product-card"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
+// Garantir que a URL sempre aponta para a API do Payload CMS
+const PAYLOAD_API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://payload-api-production-9a40.up.railway.app'
+const PAYLOAD_API_URL = `${PAYLOAD_API_BASE}/api`
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -42,7 +44,7 @@ export default function ProductDetailPage() {
     const fetchProduct = async () => {
       setIsLoading(true)
       try {
-        const response = await fetch(`${API_URL}/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1`)
+        const response = await fetch(`${PAYLOAD_API_URL}/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1`)
         const data = await response.json()
 
         if (data?.docs && data.docs.length > 0) {
