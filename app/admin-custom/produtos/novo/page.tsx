@@ -17,11 +17,17 @@ export default function NovoProduto() {
     salePrice: '',
     stock: '',
     category: '',
-    metal: '',
+    material: '',
     weight: '',
-    width: '',
+    dimensions: '',
     featured: false,
     allowCustomization: false,
+    inStock: true,
+    productCollection: '',
+    tags: [] as string[],
+    seoTitle: '',
+    seoDescription: '',
+    seoKeywords: '',
   })
 
   useEffect(() => {
@@ -49,16 +55,35 @@ export default function NovoProduto() {
     setLoading(true)
 
     try {
+      // Gerar slug a partir do nome
+      const slug = formData.name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .replace(/[^a-z0-9]+/g, '-') // Substitui caracteres especiais por hífens
+        .replace(/^-+|-+$/g, '') // Remove hífens do início e fim
+
       const payload = {
         ...formData,
+        slug,
         price: parseFloat(formData.price),
         salePrice: formData.salePrice ? parseFloat(formData.salePrice) : undefined,
         stock: parseInt(formData.stock),
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
-        width: formData.width ? parseFloat(formData.width) : undefined,
+        seo: {
+          title: formData.seoTitle,
+          description: formData.seoDescription,
+          keywords: formData.seoKeywords,
+        },
         gallery: gallery.map(img => ({
-          media: img.media.id,
+          media: {
+            id: img.media.id,
+            url: img.media.url,
+            alt: img.media.alt || '',
+            filename: img.media.filename,
+          },
           isPrimary: img.isPrimary,
+          id: img.id,
         })),
       }
 
@@ -189,17 +214,23 @@ export default function NovoProduto() {
               />
             </div>
 
-            {/* Metal e Especificações */}
-            <div className="grid grid-cols-3 gap-4">
+            {/* Material e Especificações */}
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Metal</label>
-                <input
-                  type="text"
-                  value={formData.metal}
-                  onChange={(e) => setFormData({ ...formData, metal: e.target.value })}
-                  placeholder="Ex: Ouro 18k"
+                <label className="block text-sm font-medium text-gray-700 mb-2">Material *</label>
+                <select
+                  value={formData.material}
+                  onChange={(e) => setFormData({ ...formData, material: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                />
+                  required
+                >
+                  <option value="">Selecione o material</option>
+                  <option value="ouro_18k">Ouro 18k</option>
+                  <option value="ouro_14k">Ouro 14k</option>
+                  <option value="prata_925">Prata 925</option>
+                  <option value="ouro_branco">Ouro Branco</option>
+                  <option value="ouro_rose">Ouro Rose</option>
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Peso (g)</label>
@@ -211,20 +242,67 @@ export default function NovoProduto() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 />
               </div>
+            </div>
+
+            {/* Dimensões e Coleção */}
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Largura (mm)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Dimensões</label>
                 <input
-                  type="number"
-                  step="0.1"
-                  value={formData.width}
-                  onChange={(e) => setFormData({ ...formData, width: e.target.value })}
+                  type="text"
+                  value={formData.dimensions}
+                  onChange={(e) => setFormData({ ...formData, dimensions: e.target.value })}
+                  placeholder="Ex: 20mm x 15mm"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Coleção</label>
+                <input
+                  type="text"
+                  value={formData.productCollection}
+                  onChange={(e) => setFormData({ ...formData, productCollection: e.target.value })}
+                  placeholder="Ex: Clássica, Anatômica, Premium"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 />
               </div>
             </div>
 
+            {/* Tags */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+              <div className="flex flex-wrap gap-2">
+                {['novidade', 'mais-vendido', 'exclusivo', 'promocao', 'edicao-limitada'].map((tag) => (
+                  <label key={tag} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.tags.includes(tag)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setFormData({ ...formData, tags: [...formData.tags, tag] })
+                        } else {
+                          setFormData({ ...formData, tags: formData.tags.filter(t => t !== tag) })
+                        }
+                      }}
+                      className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 capitalize">{tag.replace('-', ' ')}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
             {/* Opções */}
             <div className="space-y-3">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.inStock}
+                  onChange={(e) => setFormData({ ...formData, inStock: e.target.checked })}
+                  className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                />
+                <span className="ml-2 text-sm text-gray-700">Em estoque</span>
+              </label>
               <label className="flex items-center">
                 <input
                   type="checkbox"
@@ -243,6 +321,43 @@ export default function NovoProduto() {
                 />
                 <span className="ml-2 text-sm text-gray-700">Permite personalização</span>
               </label>
+            </div>
+
+            {/* SEO */}
+            <div className="border-t border-gray-200 pt-6 mt-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Otimização para Mecanismos de Busca (SEO)</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Título SEO</label>
+                  <input
+                    type="text"
+                    value={formData.seoTitle}
+                    onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                    placeholder="Deixe vazio para usar o nome do produto"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Meta Descrição</label>
+                  <textarea
+                    value={formData.seoDescription}
+                    onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                    rows={3}
+                    placeholder="Descrição que aparece nos resultados de busca"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Palavras-chave</label>
+                  <input
+                    type="text"
+                    value={formData.seoKeywords}
+                    onChange={(e) => setFormData({ ...formData, seoKeywords: e.target.value })}
+                    placeholder="palavra1, palavra2, palavra3"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 

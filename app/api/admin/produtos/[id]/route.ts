@@ -89,16 +89,21 @@ export async function PUT(
     // NOTA: Não enviamos gallery porque usamos Vercel Blob Storage (externo ao Payload)
     const payloadData = {
       name: body.name,
+      slug: body.slug,
       price: body.price,
       salePrice: body.salePrice || undefined,
-      metal: body.metal || '',
+      material: body.material,
       weight: body.weight || undefined,
-      width: body.width || undefined,
+      dimensions: body.dimensions || '',
       stockQuantity: body.stock,
+      inStock: body.inStock !== undefined ? body.inStock : true,
       category: body.category,
       featured: body.featured || false,
       allowCustomization: body.allowCustomization || false,
+      productCollection: body.productCollection || '',
+      tags: body.tags || [],
       description: body.description || '',
+      seo: body.seo || {},
       // gallery não é enviada ao Payload - gerenciada separadamente via Vercel Blob
     }
 
