@@ -53,6 +53,8 @@ async function saveGalleries(galleries: Record<string, ProductGallery['gallery']
 
     const result = await put(GALLERY_STORAGE_KEY, blob, {
       access: 'public',
+      addRandomSuffix: false, // Manter o mesmo nome de arquivo
+      allowOverwrite: true,    // IMPORTANTE: Permitir sobrescrever o arquivo existente
     })
 
     console.log('[GALLERY] Galleries salvas com sucesso:', result.url)

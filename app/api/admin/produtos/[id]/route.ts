@@ -25,7 +25,11 @@ async function saveGalleries(galleries: Record<string, any[]>) {
   try {
     const jsonString = JSON.stringify(galleries, null, 2)
     const blob = new Blob([jsonString], { type: 'application/json' })
-    const result = await put(GALLERY_STORAGE_KEY, blob, { access: 'public' })
+    const result = await put(GALLERY_STORAGE_KEY, blob, {
+      access: 'public',
+      addRandomSuffix: false, // Manter o mesmo nome de arquivo
+      allowOverwrite: true,    // IMPORTANTE: Permitir sobrescrever o arquivo existente
+    })
     console.log('[GALLERY] Salvo com sucesso:', result.url)
     return result
   } catch (error) {
