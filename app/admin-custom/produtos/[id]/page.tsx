@@ -96,9 +96,14 @@ export default function EditarProduto() {
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
         width: formData.width ? parseFloat(formData.width) : undefined,
         gallery: gallery.map(img => ({
-          media: img.media.id,
+          media: {
+            id: img.media.id,
+            url: img.media.url,
+            alt: img.media.alt || '',
+            filename: img.media.filename,
+          },
           isPrimary: img.isPrimary,
-          id: img.id,  // Importante: ID do item da gallery
+          id: img.id,
         })),
       }
 
