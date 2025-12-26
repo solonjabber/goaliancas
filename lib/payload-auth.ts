@@ -3,8 +3,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://payload-api-production-9a40.up.railway.app'
 
 // Credenciais do admin do Payload (usar variáveis de ambiente em produção)
-const PAYLOAD_EMAIL = process.env.PAYLOAD_ADMIN_EMAIL || 'admin@goaliancas.com'
-const PAYLOAD_PASSWORD = process.env.PAYLOAD_ADMIN_PASSWORD || 'admin123'
+const PAYLOAD_EMAIL = process.env.PAYLOAD_ADMIN_EMAIL || 'hyoho920219@gmail.com'
+const PAYLOAD_PASSWORD = process.env.PAYLOAD_ADMIN_PASSWORD || 'goaliancas2024'
 
 let cachedToken: string | null = null
 let tokenExpiry: number = 0
