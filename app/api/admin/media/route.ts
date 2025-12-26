@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { put, del } from '@vercel/blob'
+import { getAuthHeaders } from '@/lib/payload-auth'
 
 // Next.js App Router - Configuração de runtime
 export const runtime = 'nodejs'
 export const maxDuration = 30 // 30 segundos max
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://payload-api-production-9a40.up.railway.app'
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,16 +41,46 @@ export async function POST(request: NextRequest) {
       addRandomSuffix: true,
     })
 
-    console.log('[API] Upload bem-sucedido:', {
+    console.log('[API] Upload para Blob bem-sucedido:', {
       url: blob.url,
       pathname: blob.pathname
     })
 
-    // Retornar formato compatível com o esperado pelo ImageUpload component
+    // Criar registro no Payload CMS
+    console.log('[API] Criando registro media no Payload CMS...')
+
+    const authHeaders = await getAuthHeaders()
+
+    const payloadResponse = await fetch(`${API_URL}/api/media`, {
+      method: 'POST',
+      headers: authHeaders,
+      body: JSON.stringify({
+        alt: '',
+        url: blob.url,
+        filename: file.name,
+        mimeType: file.type,
+        filesize: file.size,
+      }),
+    })
+
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json()
+      console.error('[API] Erro ao criar media no Payload:', errorData)
+      throw new Error('Erro ao criar registro no Payload CMS')
+    }
+
+    const payloadData = await payloadResponse.json()
+
+    console.log('[API] Media criado no Payload com sucesso:', {
+      id: payloadData.doc.id,
+      url: payloadData.doc.url
+    })
+
+    // Retornar o documento do Payload CMS (com ID real do MongoDB)
     return NextResponse.json({
       doc: {
-        id: blob.pathname, // Usar pathname como ID único
-        url: blob.url,
+        id: payloadData.doc.id, // ID do MongoDB no Payload
+        url: blob.url, // URL do Vercel Blob
         filename: file.name,
         alt: '',
         mimeType: file.type,
