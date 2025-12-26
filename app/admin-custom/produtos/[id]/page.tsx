@@ -104,6 +104,10 @@ export default function EditarProduto() {
         })),
       }
 
+      console.log('[FRONTEND] Payload sendo enviado:', JSON.stringify(payload, null, 2))
+      console.log('[FRONTEND] Gallery:', gallery)
+      console.log('[FRONTEND] Gallery mapeada:', payload.gallery)
+
       const res = await fetch(`/api/admin/produtos/${params.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

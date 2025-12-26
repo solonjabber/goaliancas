@@ -63,7 +63,18 @@ export async function PUT(
       gallery: body.gallery || [], // Galeria de imagens
     }
 
-    console.log('[API-UPDATE] Dados preparados para Payload:', payloadData)
+    console.log('[API-UPDATE] Dados preparados para Payload:')
+    console.log(JSON.stringify(payloadData, null, 2))
+
+    // Log específico da gallery
+    console.log('[API-UPDATE] Gallery detalhada:')
+    if (payloadData.gallery && payloadData.gallery.length > 0) {
+      payloadData.gallery.forEach((item, index) => {
+        console.log(`  [${index}]:`, JSON.stringify(item, null, 2))
+      })
+    } else {
+      console.log('  Gallery vazia ou undefined')
+    }
 
     // Obter headers de autenticação
     console.log('[API-UPDATE] Obtendo headers de autenticação...')
@@ -81,7 +92,8 @@ export async function PUT(
 
     const data = await res.json()
 
-    console.log('[API-UPDATE] Resposta do Payload:', data)
+    console.log('[API-UPDATE] Resposta completa do Payload:')
+    console.log(JSON.stringify(data, null, 2))
 
     if (!res.ok) {
       console.error('[API-UPDATE] Erro na atualização:', data)
