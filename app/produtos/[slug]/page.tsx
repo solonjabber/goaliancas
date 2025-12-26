@@ -25,6 +25,8 @@ import { ProductCard } from "@/components/product/product-card"
 
 const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
 
+console.log('[PRODUCT_DETAIL] PAYLOAD_API_URL:', PAYLOAD_API_URL)
+
 export default function ProductDetailPage() {
   const params = useParams()
   const slug = params.slug as string
@@ -42,8 +44,16 @@ export default function ProductDetailPage() {
     const fetchProduct = async () => {
       setIsLoading(true)
       try {
-        const response = await fetch(`${PAYLOAD_API_URL}/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1`)
+        const url = `${PAYLOAD_API_URL}/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1`
+        console.log('[PRODUCT_DETAIL] Buscando produto com slug:', slug)
+        console.log('[PRODUCT_DETAIL] URL completa:', url)
+        const response = await fetch(url)
+        console.log('[PRODUCT_DETAIL] Response status:', response.status)
         const data = await response.json()
+        console.log('[PRODUCT_DETAIL] Docs encontrados:', data?.docs?.length || 0)
+        if (data?.docs?.length > 0) {
+          console.log('[PRODUCT_DETAIL] Primeiro produto:', { id: data.docs[0].id, name: data.docs[0].name, slug: data.docs[0].slug })
+        }
 
         if (data?.docs && data.docs.length > 0) {
           const payloadProduct = data.docs[0]
