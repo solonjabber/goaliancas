@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getAuthHeaders } from '@/lib/payload-auth'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://payload-api-production-9a40.up.railway.app'
 
@@ -9,8 +10,12 @@ export async function DELETE(
   try {
     const { id } = await params
 
+    // Obter headers de autenticação
+    const authHeaders = await getAuthHeaders()
+
     const res = await fetch(`${API_URL}/api/products/${id}`, {
       method: 'DELETE',
+      headers: authHeaders,
     })
 
     if (!res.ok) {
@@ -57,11 +62,12 @@ export async function PUT(
 
     console.log('[API] Atualizando produto:', id, payloadData)
 
+    // Obter headers de autenticação
+    const authHeaders = await getAuthHeaders()
+
     const res = await fetch(`${API_URL}/api/products/${id}`, {
       method: 'PATCH', // Payload usa PATCH para updates parciais
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: authHeaders,
       body: JSON.stringify(payloadData),
     })
 

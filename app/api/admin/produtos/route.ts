@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getAuthHeaders } from '@/lib/payload-auth'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://payload-api-production-9a40.up.railway.app'
 
@@ -26,11 +27,12 @@ export async function POST(request: NextRequest) {
 
     console.log('[API] Enviando dados para Payload:', payloadData)
 
+    // Obter headers de autenticação
+    const authHeaders = await getAuthHeaders()
+
     const res = await fetch(`${API_URL}/api/products`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: authHeaders,
       body: JSON.stringify(payloadData),
     })
 
