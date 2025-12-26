@@ -92,6 +92,7 @@ export const useFilterStore = create<FilterState>((set, get) => ({
 
       console.log('[LOAD_PRODUCTS] Produtos mapeados:', products.length)
       console.log('[LOAD_PRODUCTS] Exemplo mapeado:', products[0])
+      console.log('[LOAD_PRODUCTS] Categorias dos produtos:', products.map(p => ({ name: p.name, category: p.category })))
 
       set({ allProducts: products, filteredProducts: products, isLoading: false })
     } catch (error) {
@@ -171,9 +172,20 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     const { filters, allProducts } = get()
     let products = [...allProducts]
 
+    console.log('[APPLY_FILTERS] Filtros de categoria:', filters.categories)
+    console.log('[APPLY_FILTERS] Categorias disponíveis:', [...new Set(allProducts.map(p => p.category))])
+
     // Filter by categories
     if (filters.categories.length > 0) {
-      products = products.filter((p) => filters.categories.includes(p.category))
+      const beforeCount = products.length
+      products = products.filter((p) => {
+        const match = filters.categories.includes(p.category)
+        if (!match && beforeCount > 0) {
+          console.log('[APPLY_FILTERS] Produto rejeitado:', p.name, 'categoria:', p.category, 'filtros:', filters.categories)
+        }
+        return match
+      })
+      console.log('[APPLY_FILTERS] Após filtro de categoria:', products.length, 'produtos (antes:', beforeCount, ')')
     }
 
     // Filter by metal types
