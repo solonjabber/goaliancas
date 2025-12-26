@@ -28,23 +28,18 @@ const initialFilters: ProductFilters = {
 }
 
 // Helper para mapear produtos do Payload
-function mapPayloadProduct(payloadProduct: any): Product {
+function mapPayloadProduct(payloadProduct: any, galleries: Record<string, any[]> = {}): Product {
   const PAYLOAD_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
 
-  // Mapear imagens
-  const images = payloadProduct.gallery?.map((item: any) => {
-    const media = item.media
-    if (!media) return ''
-    // Se media é um objeto com URL
-    if (typeof media === 'object' && media.url) {
-      return media.url.startsWith('http') ? media.url : `${PAYLOAD_URL}${media.url}`
-    }
-    // Se media é apenas um ID
-    if (typeof media === 'string') {
-      return `${PAYLOAD_URL}/api/media/${media}`
-    }
-    return ''
-  }).filter(Boolean) || []
+  // Buscar gallery do Vercel Blob Storage
+  const productGallery = galleries[payloadProduct.id] || []
+
+  // Ordenar: imagem principal primeiro
+  const sortedGallery = productGallery.sort((a: any, b: any) =>
+    (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0)
+  )
+
+  const images = sortedGallery.map((item: any) => item.media?.url || '').filter(Boolean)
 
   return {
     id: payloadProduct.id,
@@ -88,7 +83,22 @@ export const useFilterStore = create<FilterState>((set, get) => ({
       console.log('[LOAD_PRODUCTS] Produtos carregados:', data?.docs?.length)
       console.log('[LOAD_PRODUCTS] Exemplo de produto:', data?.docs?.[0])
 
-      const products = (data?.docs || []).map(mapPayloadProduct)
+      // Buscar todas as galleries do Vercel Blob Storage
+      let galleries: Record<string, any[]> = {}
+      try {
+        const galleriesResponse = await fetch('/api/debug/galleries')
+        if (galleriesResponse.ok) {
+          const galleriesData = await galleriesResponse.json()
+          if (galleriesData.galleries) {
+            galleries = galleriesData.galleries
+            console.log('[LOAD_PRODUCTS] Galleries carregadas:', Object.keys(galleries).length, 'produtos com imagens')
+          }
+        }
+      } catch (error) {
+        console.error('[LOAD_PRODUCTS] Erro ao carregar galleries:', error)
+      }
+
+      const products = (data?.docs || []).map((product: any) => mapPayloadProduct(product, galleries))
 
       console.log('[LOAD_PRODUCTS] Produtos mapeados:', products.length)
       console.log('[LOAD_PRODUCTS] Exemplo mapeado:', products[0])

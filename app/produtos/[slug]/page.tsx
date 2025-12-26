@@ -47,13 +47,32 @@ export default function ProductDetailPage() {
 
         if (data?.docs && data.docs.length > 0) {
           const payloadProduct = data.docs[0]
+
+          // Buscar gallery do Vercel Blob Storage
+          let galleryImages: string[] = []
+          try {
+            const galleryResponse = await fetch(`/api/admin/produtos/${payloadProduct.id}/gallery`)
+            if (galleryResponse.ok) {
+              const galleryData = await galleryResponse.json()
+              if (galleryData.gallery && Array.isArray(galleryData.gallery)) {
+                // Ordenar: imagem principal primeiro
+                const sortedGallery = galleryData.gallery.sort((a: any, b: any) =>
+                  (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0)
+                )
+                galleryImages = sortedGallery.map((item: any) => item.media?.url || '')
+              }
+            }
+          } catch (error) {
+            console.error('Erro ao carregar gallery:', error)
+          }
+
           const mappedProduct: Product = {
             id: payloadProduct.id,
             name: payloadProduct.name,
             slug: payloadProduct.slug,
             description: payloadProduct.description,
             price: payloadProduct.price,
-            images: payloadProduct.gallery?.map((item: any) => item.media?.url || '') || [],
+            images: galleryImages,
             category: payloadProduct.category?.slug || '',
             metalType: payloadProduct.material,
             collection: payloadProduct.productCollection,
