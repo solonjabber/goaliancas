@@ -1,7 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthHeaders } from '@/lib/payload-auth'
+import { put, head } from '@vercel/blob'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://payload-api-production-9a40.up.railway.app'
+const GALLERY_STORAGE_KEY = 'product-galleries.json'
+
+// Funções para gerenciar galleries
+async function loadGalleries(): Promise<Record<string, any[]>> {
+  try {
+    const blobInfo = await head(GALLERY_STORAGE_KEY).catch(() => null)
+    if (!blobInfo) return {}
+
+    const response = await fetch(blobInfo.url)
+    if (!response.ok) return {}
+
+    return await response.json()
+  } catch (error) {
+    console.error('[GALLERY] Erro ao carregar:', error)
+    return {}
+  }
+}
+
+async function saveGalleries(galleries: Record<string, any[]>) {
+  try {
+    const jsonString = JSON.stringify(galleries, null, 2)
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const result = await put(GALLERY_STORAGE_KEY, blob, { access: 'public' })
+    console.log('[GALLERY] Salvo com sucesso:', result.url)
+    return result
+  } catch (error) {
+    console.error('[GALLERY] Erro ao salvar:', error)
+    throw error
+  }
+}
 
 export async function DELETE(
   request: NextRequest,
@@ -107,23 +138,25 @@ export async function PUT(
     console.log('[API-UPDATE] Produto atualizado com sucesso no Payload')
 
     // Salvar gallery separadamente (via Vercel Blob Storage)
-    if (body.gallery) {
-      console.log('[API-UPDATE] Salvando gallery separadamente...')
+    if (body.gallery && Array.isArray(body.gallery)) {
+      console.log('[API-UPDATE] Salvando gallery:', body.gallery.length, 'imagens')
       try {
-        const galleryResponse = await fetch(`${request.url}/gallery`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ gallery: body.gallery }),
-        })
+        // Carregar galleries existentes
+        const galleries = await loadGalleries()
 
-        if (!galleryResponse.ok) {
-          console.error('[API-UPDATE] Erro ao salvar gallery:', await galleryResponse.text())
-        } else {
-          console.log('[API-UPDATE] Gallery salva com sucesso')
-        }
+        // Atualizar gallery do produto
+        galleries[id] = body.gallery
+
+        // Salvar de volta
+        await saveGalleries(galleries)
+
+        console.log('[API-UPDATE] Gallery salva com sucesso!')
       } catch (error) {
         console.error('[API-UPDATE] Erro ao salvar gallery:', error)
+        // Não falhar a requisição se a gallery não for salva
       }
+    } else {
+      console.log('[API-UPDATE] Nenhuma gallery para salvar')
     }
 
     return NextResponse.json(data)
