@@ -12,10 +12,13 @@ let tokenExpiry: number = 0
 export async function getPayloadToken(): Promise<string> {
   // Se temos um token em cache e ele ainda não expirou, retornar
   if (cachedToken && Date.now() < tokenExpiry) {
+    console.log('[PAYLOAD_AUTH] Usando token em cache')
     return cachedToken
   }
 
   try {
+    console.log('[PAYLOAD_AUTH] Fazendo login no Payload...', { email: PAYLOAD_EMAIL })
+
     // Fazer login no Payload CMS
     const response = await fetch(`${API_URL}/api/users/login`, {
       method: 'POST',
@@ -28,13 +31,18 @@ export async function getPayloadToken(): Promise<string> {
       }),
     })
 
+    console.log('[PAYLOAD_AUTH] Status da resposta:', response.status)
+
     if (!response.ok) {
-      throw new Error(`Payload login failed: ${response.status}`)
+      const errorData = await response.text()
+      console.error('[PAYLOAD_AUTH] Erro no login:', errorData)
+      throw new Error(`Payload login failed: ${response.status} - ${errorData}`)
     }
 
     const data = await response.json()
 
     if (!data.token) {
+      console.error('[PAYLOAD_AUTH] Sem token na resposta:', data)
       throw new Error('No token received from Payload')
     }
 
@@ -42,9 +50,10 @@ export async function getPayloadToken(): Promise<string> {
     cachedToken = data.token
     tokenExpiry = Date.now() + 60 * 60 * 1000 // 1 hora
 
+    console.log('[PAYLOAD_AUTH] Login bem-sucedido, token obtido')
     return cachedToken
   } catch (error) {
-    console.error('Error getting Payload token:', error)
+    console.error('[PAYLOAD_AUTH] Error getting Payload token:', error)
     throw error
   }
 }

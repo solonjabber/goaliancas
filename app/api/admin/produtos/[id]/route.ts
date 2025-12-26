@@ -44,6 +44,9 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
 
+    console.log('[API-UPDATE] Iniciando atualização do produto:', id)
+    console.log('[API-UPDATE] Dados recebidos:', body)
+
     // Preparar dados no formato que o Payload espera
     const payloadData = {
       name: body.name,
@@ -60,33 +63,41 @@ export async function PUT(
       gallery: body.gallery || [], // Galeria de imagens
     }
 
-    console.log('[API] Atualizando produto:', id, payloadData)
+    console.log('[API-UPDATE] Dados preparados para Payload:', payloadData)
 
     // Obter headers de autenticação
+    console.log('[API-UPDATE] Obtendo headers de autenticação...')
     const authHeaders = await getAuthHeaders()
+    console.log('[API-UPDATE] Headers obtidos com sucesso')
 
+    console.log('[API-UPDATE] Enviando requisição para:', `${API_URL}/api/products/${id}`)
     const res = await fetch(`${API_URL}/api/products/${id}`, {
       method: 'PATCH', // Payload usa PATCH para updates parciais
       headers: authHeaders,
       body: JSON.stringify(payloadData),
     })
 
+    console.log('[API-UPDATE] Status da resposta:', res.status)
+
     const data = await res.json()
 
-    console.log('[API] Resposta do Payload:', { status: res.status, data })
+    console.log('[API-UPDATE] Resposta do Payload:', data)
 
     if (!res.ok) {
+      console.error('[API-UPDATE] Erro na atualização:', data)
       return NextResponse.json(
         { error: 'Erro ao atualizar produto', details: data },
         { status: res.status }
       )
     }
 
+    console.log('[API-UPDATE] Produto atualizado com sucesso')
     return NextResponse.json(data)
   } catch (error: any) {
-    console.error('Erro ao atualizar produto:', error)
+    console.error('[API-UPDATE] Erro ao atualizar produto:', error)
+    console.error('[API-UPDATE] Stack:', error.stack)
     return NextResponse.json(
-      { error: 'Erro interno do servidor', message: error.message },
+      { error: 'Erro interno do servidor', message: error.message, stack: error.stack },
       { status: 500 }
     )
   }
