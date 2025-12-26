@@ -95,6 +95,11 @@ export const useFilterStore = create<FilterState>((set, get) => ({
       console.log('[LOAD_PRODUCTS] Categorias dos produtos:', products.map(p => ({ name: p.name, category: p.category })))
 
       set({ allProducts: products, filteredProducts: products, isLoading: false })
+
+      // Executar busca inicial após carregar produtos
+      const { performSearch } = await import('./search-store').then(m => m.useSearchStore.getState())
+      console.log('[LOAD_PRODUCTS] Executando busca inicial após carregar produtos')
+      performSearch()
     } catch (error) {
       console.error('Erro ao carregar produtos do Payload, usando dados mock:', error)
 
@@ -103,6 +108,11 @@ export const useFilterStore = create<FilterState>((set, get) => ({
       console.log('[LOAD_PRODUCTS] Usando dados mock:', PRODUCTS.length, 'produtos')
 
       set({ allProducts: PRODUCTS, filteredProducts: PRODUCTS, isLoading: false })
+
+      // Executar busca inicial após carregar produtos mock
+      const { performSearch } = await import('./search-store').then(m => m.useSearchStore.getState())
+      console.log('[LOAD_PRODUCTS] Executando busca inicial após carregar produtos mock')
+      performSearch()
     }
   },
 

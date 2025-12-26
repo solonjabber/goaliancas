@@ -230,7 +230,14 @@ export const useSearchStore = create<SearchState>()(
 
       performSearch: () => {
         const { query, filters } = get()
-        const allProducts = useFilterStore.getState().allProducts
+        const filterStoreState = useFilterStore.getState()
+        const allProducts = filterStoreState.allProducts
+
+        // Se ainda está carregando ou não há produtos, não fazer busca ainda
+        if (filterStoreState.isLoading || allProducts.length === 0) {
+          console.log('[PERFORM_SEARCH] Aguardando produtos... (isLoading:', filterStoreState.isLoading, ', produtos:', allProducts.length, ')')
+          return
+        }
 
         console.log('[PERFORM_SEARCH] Iniciando busca com query:', query)
         console.log('[PERFORM_SEARCH] Total de produtos disponíveis:', allProducts.length)
