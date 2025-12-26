@@ -76,7 +76,10 @@ export async function PUT(
     const body = await request.json()
 
     console.log('[API-UPDATE] Iniciando atualização do produto:', id)
-    console.log('[API-UPDATE] Dados recebidos:', body)
+    console.log('[API-UPDATE] Dados recebidos:', JSON.stringify(body, null, 2))
+    console.log('[API-UPDATE] Gallery no body:', body.gallery)
+    console.log('[API-UPDATE] Gallery é array?', Array.isArray(body.gallery))
+    console.log('[API-UPDATE] Gallery length:', body.gallery?.length)
 
     // Preparar dados no formato que o Payload espera
     // NOTA: Não enviamos gallery porque usamos Vercel Blob Storage (externo ao Payload)
@@ -138,14 +141,23 @@ export async function PUT(
     console.log('[API-UPDATE] Produto atualizado com sucesso no Payload')
 
     // Salvar gallery separadamente (via Vercel Blob Storage)
+    console.log('[API-UPDATE] Verificando gallery...')
+    console.log('[API-UPDATE] body.gallery:', body.gallery)
+    console.log('[API-UPDATE] typeof body.gallery:', typeof body.gallery)
+    console.log('[API-UPDATE] Array.isArray(body.gallery):', Array.isArray(body.gallery))
+
     if (body.gallery && Array.isArray(body.gallery)) {
       console.log('[API-UPDATE] Salvando gallery:', body.gallery.length, 'imagens')
+      console.log('[API-UPDATE] Conteúdo da gallery:', JSON.stringify(body.gallery, null, 2))
       try {
         // Carregar galleries existentes
         const galleries = await loadGalleries()
+        console.log('[API-UPDATE] Galleries carregadas, total produtos:', Object.keys(galleries).length)
 
         // Atualizar gallery do produto
         galleries[id] = body.gallery
+        console.log('[API-UPDATE] Gallery atribuída ao produto', id)
+        console.log('[API-UPDATE] Nova gallery do produto:', JSON.stringify(galleries[id], null, 2))
 
         // Salvar de volta
         await saveGalleries(galleries)
@@ -156,7 +168,9 @@ export async function PUT(
         // Não falhar a requisição se a gallery não for salva
       }
     } else {
-      console.log('[API-UPDATE] Nenhuma gallery para salvar')
+      console.log('[API-UPDATE] Nenhuma gallery para salvar (falhou na condição)')
+      console.log('[API-UPDATE] body.gallery existe?', !!body.gallery)
+      console.log('[API-UPDATE] body.gallery é array?', Array.isArray(body.gallery))
     }
 
     return NextResponse.json(data)
