@@ -53,7 +53,7 @@ export default function EditarProduto() {
           description: produto.description || '',
           price: produto.price?.toString() || '',
           salePrice: produto.salePrice?.toString() || '',
-          stock: produto.stock?.toString() || '',
+          stock: produto.stockQuantity?.toString() || '',
           category: typeof produto.category === 'object' ? produto.category.id : produto.category,
           metal: produto.metal || '',
           weight: produto.weight?.toString() || '',

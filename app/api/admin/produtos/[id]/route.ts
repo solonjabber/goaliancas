@@ -94,7 +94,7 @@ export async function PUT(
       metal: body.metal || '',
       weight: body.weight || undefined,
       width: body.width || undefined,
-      stock: body.stock,
+      stockQuantity: body.stock,
       category: body.category,
       featured: body.featured || false,
       allowCustomization: body.allowCustomization || false,

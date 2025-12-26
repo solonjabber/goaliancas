@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       metal: body.metal || '',
       weight: body.weight || undefined,
       width: body.width || undefined,
-      stock: body.stock,
+      stockQuantity: body.stock,
       category: body.category, // ID da categoria
       featured: body.featured || false,
       allowCustomization: body.allowCustomization || false,
