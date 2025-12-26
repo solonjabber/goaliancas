@@ -100,6 +100,7 @@ export default function EditarProduto() {
         gallery: gallery.map(img => ({
           media: img.media.id,
           isPrimary: img.isPrimary,
+          id: img.id,  // Importante: ID do item da gallery
         })),
       }
 
