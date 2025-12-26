@@ -147,8 +147,14 @@ export function ProdutosContent() {
 
             {/* Results Count */}
             <div className="text-sm text-gray-600">
-              <span className="font-semibold">{displayProducts.length}</span>{' '}
-              {displayProducts.length === 1 ? 'produto' : 'produtos'}
+              {isLoading ? (
+                <span>Carregando produtos...</span>
+              ) : (
+                <>
+                  <span className="font-semibold">{displayProducts.length}</span>{' '}
+                  {displayProducts.length === 1 ? 'produto' : 'produtos'}
+                </>
+              )}
             </div>
           </div>
 
@@ -161,7 +167,7 @@ export function ProdutosContent() {
 
         {/* Product Grid */}
         <div>
-          <ProductGrid products={displayProducts} />
+          <ProductGrid products={displayProducts} isLoading={isLoading} />
         </div>
       </div>
     </main>
