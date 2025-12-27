@@ -15,21 +15,25 @@ export function FeaturedProducts() {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        const response = await fetch(`${PAYLOAD_API_URL}/products?limit=4&where[status][equals]=published&where[featured][equals]=true&depth=1`, {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache'
-          }
+        const url = `${PAYLOAD_API_URL}/products?limit=4&where[status][equals]=published&where[featured][equals]=true&depth=1&_=${Date.now()}`
+        console.log('🔍 Buscando produtos em destaque de:', url)
+
+        const response = await fetch(url, {
+          cache: 'no-store'
         })
 
+        console.log('📡 Status da resposta:', response.status, response.statusText)
+
         if (!response.ok) {
-          console.error('Erro ao buscar produtos em destaque')
+          console.error('❌ Erro ao buscar produtos em destaque:', response.status)
           setLoading(false)
           return
         }
 
         const data = await response.json()
+        console.log('📦 Dados recebidos:', data)
+        console.log('📊 Total de produtos em destaque:', data?.docs?.length || 0)
+
         const products = (data?.docs || []).map((payloadProduct: any) => {
           const images = payloadProduct.gallery?.map((item: any) => {
             const media = item.media
