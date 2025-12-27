@@ -41,12 +41,33 @@ function mapPayloadProduct(payloadProduct: any, galleries: Record<string, any[]>
 
   const images = sortedGallery.map((item: any) => item.media?.url || '').filter(Boolean)
 
+  // Construir especificações
+  const specifications: string[] = []
+  if (payloadProduct.material) {
+    const materialLabels: Record<string, string> = {
+      'ouro_18k': 'Ouro 18k',
+      'ouro_14k': 'Ouro 14k',
+      'prata_925': 'Prata 925',
+      'ouro_branco': 'Ouro Branco',
+      'ouro_rose': 'Ouro Rose'
+    }
+    const materialLabel = materialLabels[payloadProduct.material] || payloadProduct.material
+    specifications.push(`Material: ${materialLabel}`)
+  }
+  if (payloadProduct.weight) {
+    specifications.push(`Peso: ${payloadProduct.weight}g`)
+  }
+  if (payloadProduct.dimensions) {
+    specifications.push(`Dimensões: ${payloadProduct.dimensions}`)
+  }
+
   return {
     id: payloadProduct.id,
     name: payloadProduct.name,
     slug: payloadProduct.slug,
     description: payloadProduct.description,
     price: payloadProduct.price,
+    salePrice: payloadProduct.salePrice,
     images,
     category: payloadProduct.category?.slug || payloadProduct.category || '',
     metalType: payloadProduct.material,
@@ -55,7 +76,7 @@ function mapPayloadProduct(payloadProduct: any, galleries: Record<string, any[]>
     inStock: payloadProduct.inStock,
     featured: payloadProduct.featured,
     discount: payloadProduct.salePrice ? Math.round((1 - payloadProduct.salePrice / payloadProduct.price) * 100) : undefined,
-    specifications: [],
+    specifications,
     customizable: payloadProduct.allowCustomization,
     keywords: [],
     tags: payloadProduct.tags || [],

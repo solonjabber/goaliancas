@@ -68,12 +68,39 @@ export default function ProductDetailPage() {
             console.error('Erro ao carregar gallery:', error)
           }
 
+          // Construir especificações a partir dos campos do produto
+          const specifications: string[] = []
+
+          // Material
+          if (payloadProduct.material) {
+            const materialLabels: Record<string, string> = {
+              'ouro_18k': 'Ouro 18k',
+              'ouro_14k': 'Ouro 14k',
+              'prata_925': 'Prata 925',
+              'ouro_branco': 'Ouro Branco',
+              'ouro_rose': 'Ouro Rose'
+            }
+            const materialLabel = materialLabels[payloadProduct.material] || payloadProduct.material
+            specifications.push(`Material: ${materialLabel}`)
+          }
+
+          // Peso
+          if (payloadProduct.weight) {
+            specifications.push(`Peso: ${payloadProduct.weight}g`)
+          }
+
+          // Dimensões
+          if (payloadProduct.dimensions) {
+            specifications.push(`Dimensões: ${payloadProduct.dimensions}`)
+          }
+
           const mappedProduct: Product = {
             id: payloadProduct.id,
             name: payloadProduct.name,
             slug: payloadProduct.slug,
             description: payloadProduct.description,
             price: payloadProduct.price,
+            salePrice: payloadProduct.salePrice,
             images: galleryImages,
             category: payloadProduct.category?.slug || '',
             metalType: payloadProduct.material,
@@ -82,7 +109,7 @@ export default function ProductDetailPage() {
             inStock: payloadProduct.inStock,
             featured: payloadProduct.featured,
             discount: payloadProduct.salePrice ? Math.round((1 - payloadProduct.salePrice / payloadProduct.price) * 100) : undefined,
-            specifications: payloadProduct.specifications || [],
+            specifications,
             customizable: payloadProduct.allowCustomization,
             keywords: [],
             tags: payloadProduct.tags || [],
@@ -127,9 +154,7 @@ export default function ProductDetailPage() {
     )
   }
 
-  const finalPrice = product.discount
-    ? product.price * (1 - product.discount / 100)
-    : product.price
+  const finalPrice = product.salePrice || product.price
 
   const whatsappMessage = `Olá! Tenho interesse no produto: ${product.name} - ${formatCurrency(finalPrice)}`
   const whatsappLink = getWhatsAppLink("41999999999", whatsappMessage)
