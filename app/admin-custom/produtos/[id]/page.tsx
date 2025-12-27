@@ -48,6 +48,11 @@ export default function EditarProduto() {
 
     const saveGallery = async () => {
       try {
+        console.log('[AUTO-SAVE] Iniciando auto-save da gallery')
+        console.log('[AUTO-SAVE] Produto ID:', params.id)
+        console.log('[AUTO-SAVE] Gallery atual:', gallery)
+        console.log('[AUTO-SAVE] Gallery length:', gallery.length)
+
         const payload = {
           gallery: gallery.map(img => ({
             media: {
@@ -61,13 +66,25 @@ export default function EditarProduto() {
           })),
         }
 
-        await fetch(`/api/admin/produtos/${params.id}/gallery`, {
+        console.log('[AUTO-SAVE] Payload preparado:', JSON.stringify(payload, null, 2))
+
+        const response = await fetch(`/api/admin/produtos/${params.id}/gallery`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
+
+        console.log('[AUTO-SAVE] Response status:', response.status)
+
+        if (response.ok) {
+          const data = await response.json()
+          console.log('[AUTO-SAVE] Success! Response:', data)
+        } else {
+          const error = await response.text()
+          console.error('[AUTO-SAVE] Failed! Error:', error)
+        }
       } catch (error) {
-        console.error('Erro ao salvar galeria automaticamente:', error)
+        console.error('[AUTO-SAVE] Erro ao salvar galeria automaticamente:', error)
       }
     }
 
