@@ -108,12 +108,24 @@ export default function EditarProduto() {
 
         // Carregar galeria de imagens da rota separada
         try {
-          const galleryRes = await fetch(`/api/admin/produtos/${params.id}/gallery`)
+          const galleryRes = await fetch(`/api/admin/produtos/${params.id}/gallery`, {
+            cache: 'no-store',
+            headers: {
+              'Cache-Control': 'no-cache',
+            },
+          })
+          console.log('[LOAD] Gallery response status:', galleryRes.status)
           if (galleryRes.ok) {
             const galleryData = await galleryRes.json()
+            console.log('[LOAD] Gallery data received:', galleryData)
             if (galleryData.gallery && Array.isArray(galleryData.gallery)) {
+              console.log('[LOAD] Setting gallery with', galleryData.gallery.length, 'images')
               setGallery(galleryData.gallery)
+            } else {
+              console.log('[LOAD] Gallery data invalid or empty')
             }
+          } else {
+            console.error('[LOAD] Gallery fetch failed:', galleryRes.status, galleryRes.statusText)
           }
         } catch (error) {
           console.error('Erro ao carregar gallery:', error)
