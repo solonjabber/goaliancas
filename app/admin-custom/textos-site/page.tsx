@@ -380,21 +380,21 @@ export default function TextosSite() {
                 <input
                   type="text"
                   placeholder="Título"
-                  value={texts.categoryCards.title}
+                  value={texts.categoryCards?.title || ''}
                   onChange={(e) => setTexts({ ...texts, categoryCards: { ...texts.categoryCards, title: e.target.value } })}
                   className="w-full px-4 py-2 border rounded-lg"
                 />
                 <input
                   type="text"
                   placeholder="Subtítulo"
-                  value={texts.categoryCards.subtitle}
+                  value={texts.categoryCards?.subtitle || ''}
                   onChange={(e) => setTexts({ ...texts, categoryCards: { ...texts.categoryCards, subtitle: e.target.value } })}
                   className="w-full px-4 py-2 border rounded-lg"
                 />
                 <input
                   type="text"
                   placeholder="Texto do botão (ex: Ver produtos)"
-                  value={texts.categoryCards.viewProducts}
+                  value={texts.categoryCards?.viewProducts || ''}
                   onChange={(e) => setTexts({ ...texts, categoryCards: { ...texts.categoryCards, viewProducts: e.target.value } })}
                   className="w-full px-4 py-2 border rounded-lg"
                 />
@@ -406,7 +406,7 @@ export default function TextosSite() {
                       <label className="block text-xs text-gray-600 mb-1">Alianças de Casamento</label>
                       <input
                         type="text"
-                        value={texts.categoryCards.descriptions.weddingRings}
+                        value={texts.categoryCards?.descriptions?.weddingRings || ''}
                         onChange={(e) => setTexts({ ...texts, categoryCards: { ...texts.categoryCards, descriptions: { ...texts.categoryCards.descriptions, weddingRings: e.target.value } } })}
                         className="w-full px-3 py-2 border rounded text-sm"
                       />
@@ -415,7 +415,7 @@ export default function TextosSite() {
                       <label className="block text-xs text-gray-600 mb-1">Alianças de Noivado</label>
                       <input
                         type="text"
-                        value={texts.categoryCards.descriptions.engagementRings}
+                        value={texts.categoryCards?.descriptions?.engagementRings || ''}
                         onChange={(e) => setTexts({ ...texts, categoryCards: { ...texts.categoryCards, descriptions: { ...texts.categoryCards.descriptions, engagementRings: e.target.value } } })}
                         className="w-full px-3 py-2 border rounded text-sm"
                       />
@@ -424,7 +424,7 @@ export default function TextosSite() {
                       <label className="block text-xs text-gray-600 mb-1">Anéis</label>
                       <input
                         type="text"
-                        value={texts.categoryCards.descriptions.rings}
+                        value={texts.categoryCards?.descriptions?.rings || ''}
                         onChange={(e) => setTexts({ ...texts, categoryCards: { ...texts.categoryCards, descriptions: { ...texts.categoryCards.descriptions, rings: e.target.value } } })}
                         className="w-full px-3 py-2 border rounded text-sm"
                       />
@@ -433,7 +433,7 @@ export default function TextosSite() {
                       <label className="block text-xs text-gray-600 mb-1">Anéis de Formatura</label>
                       <input
                         type="text"
-                        value={texts.categoryCards.descriptions.graduationRings}
+                        value={texts.categoryCards?.descriptions?.graduationRings || ''}
                         onChange={(e) => setTexts({ ...texts, categoryCards: { ...texts.categoryCards, descriptions: { ...texts.categoryCards.descriptions, graduationRings: e.target.value } } })}
                         className="w-full px-3 py-2 border rounded text-sm"
                       />
