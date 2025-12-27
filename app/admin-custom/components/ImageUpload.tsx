@@ -232,16 +232,14 @@ export default function ImageUpload({ images, onChange, maxImages = 10 }: ImageU
                 {/* Actions Overlay */}
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
                   {!image.isPrimary && (
-                    <button
-                      onClick={() => handleSetPrimary(index)}
+                    <button type="button"                      onClick={() => handleSetPrimary(index)}
                       className="bg-white text-gray-700 p-2 rounded-full hover:bg-amber-500 hover:text-white transition-colors"
                       title="Definir como principal"
                     >
                       <Star className="h-4 w-4" />
                     </button>
                   )}
-                  <button
-                    onClick={() => handleRemoveImage(index)}
+                  <button type="button"                    onClick={() => handleRemoveImage(index)}
                     className="bg-white text-gray-700 p-2 rounded-full hover:bg-red-500 hover:text-white transition-colors"
                     title="Remover imagem"
                   >
