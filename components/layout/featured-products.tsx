@@ -15,7 +15,7 @@ export function FeaturedProducts() {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        const url = `${PAYLOAD_API_URL}/products?limit=4&where[status][equals]=published&where[featured][equals]=true&depth=1&_=${Date.now()}`
+        const url = `${PAYLOAD_API_URL}/api/products?limit=4&where[status][equals]=published&where[featured][equals]=true&depth=1&_=${Date.now()}`
         console.log('🔍 Buscando produtos em destaque de:', url)
 
         const response = await fetch(url, {
