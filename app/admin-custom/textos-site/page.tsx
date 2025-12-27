@@ -451,7 +451,7 @@ export default function TextosSite() {
               <div className="p-6 space-y-4">
                 <textarea
                   placeholder="Descrição da Empresa"
-                  value={texts.footer.companyDescription}
+                  value={texts.footer?.companyDescription || ''}
                   onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, companyDescription: e.target.value } })}
                   rows={2}
                   className="w-full px-4 py-2 border rounded-lg"
@@ -461,21 +461,21 @@ export default function TextosSite() {
                   <input
                     type="text"
                     placeholder="Endereço"
-                    value={texts.footer.address}
+                    value={texts.footer?.address || ''}
                     onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, address: e.target.value } })}
                     className="px-4 py-2 border rounded-lg"
                   />
                   <input
                     type="text"
                     placeholder="Telefone"
-                    value={texts.footer.phone}
+                    value={texts.footer?.phone || ''}
                     onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, phone: e.target.value } })}
                     className="px-4 py-2 border rounded-lg"
                   />
                   <input
                     type="email"
                     placeholder="E-mail"
-                    value={texts.footer.email}
+                    value={texts.footer?.email || ''}
                     onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, email: e.target.value } })}
                     className="px-4 py-2 border rounded-lg"
                   />
@@ -487,35 +487,35 @@ export default function TextosSite() {
                     <input
                       type="text"
                       placeholder="Título da seção"
-                      value={texts.footer.quickLinks.title}
+                      value={texts.footer?.quickLinks?.title || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, quickLinks: { ...texts.footer.quickLinks, title: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
                     <input
                       type="text"
                       placeholder="Todos os Produtos"
-                      value={texts.footer.quickLinks.allProducts}
+                      value={texts.footer?.quickLinks?.allProducts || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, quickLinks: { ...texts.footer.quickLinks, allProducts: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
                     <input
                       type="text"
                       placeholder="Alianças de Casamento"
-                      value={texts.footer.quickLinks.weddingRings}
+                      value={texts.footer?.quickLinks?.weddingRings || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, quickLinks: { ...texts.footer.quickLinks, weddingRings: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
                     <input
                       type="text"
                       placeholder="Anéis de Formatura"
-                      value={texts.footer.quickLinks.graduationRings}
+                      value={texts.footer?.quickLinks?.graduationRings || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, quickLinks: { ...texts.footer.quickLinks, graduationRings: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
                     <input
                       type="text"
                       placeholder="Sobre Nós"
-                      value={texts.footer.quickLinks.about}
+                      value={texts.footer?.quickLinks?.about || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, quickLinks: { ...texts.footer.quickLinks, about: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
@@ -528,35 +528,35 @@ export default function TextosSite() {
                     <input
                       type="text"
                       placeholder="Título da seção"
-                      value={texts.footer.customerService.title}
+                      value={texts.footer?.customerService?.title || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, customerService: { ...texts.footer.customerService, title: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
                     <input
                       type="text"
                       placeholder="Fale Conosco"
-                      value={texts.footer.customerService.contact}
+                      value={texts.footer?.customerService?.contact || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, customerService: { ...texts.footer.customerService, contact: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
                     <input
                       type="text"
                       placeholder="Personalização"
-                      value={texts.footer.customerService.customization}
+                      value={texts.footer?.customerService?.customization || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, customerService: { ...texts.footer.customerService, customization: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
                     <input
                       type="text"
                       placeholder="Garantia"
-                      value={texts.footer.customerService.warranty}
+                      value={texts.footer?.customerService?.warranty || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, customerService: { ...texts.footer.customerService, warranty: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
                     <input
                       type="text"
                       placeholder="Perguntas Frequentes"
-                      value={texts.footer.customerService.faq}
+                      value={texts.footer?.customerService?.faq || ''}
                       onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, customerService: { ...texts.footer.customerService, faq: e.target.value } } })}
                       className="px-3 py-2 border rounded text-sm"
                     />
@@ -567,14 +567,14 @@ export default function TextosSite() {
                   <input
                     type="text"
                     placeholder="Título seção Contato"
-                    value={texts.footer.contactTitle}
+                    value={texts.footer?.contactTitle || ''}
                     onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, contactTitle: e.target.value } })}
                     className="px-4 py-2 border rounded-lg"
                   />
                   <input
                     type="text"
                     placeholder="Texto Copyright"
-                    value={texts.footer.copyright}
+                    value={texts.footer?.copyright || ''}
                     onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, copyright: e.target.value } })}
                     className="px-4 py-2 border rounded-lg"
                   />
@@ -584,14 +584,14 @@ export default function TextosSite() {
                   <input
                     type="url"
                     placeholder="Link Instagram"
-                    value={texts.footer.socialMedia.instagram}
+                    value={texts.footer?.socialMedia?.instagram || ''}
                     onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, socialMedia: { ...texts.footer.socialMedia, instagram: e.target.value } } })}
                     className="px-4 py-2 border rounded-lg"
                   />
                   <input
                     type="url"
                     placeholder="Link Facebook"
-                    value={texts.footer.socialMedia.facebook}
+                    value={texts.footer?.socialMedia?.facebook || ''}
                     onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, socialMedia: { ...texts.footer.socialMedia, facebook: e.target.value } } })}
                     className="px-4 py-2 border rounded-lg"
                   />
@@ -601,14 +601,14 @@ export default function TextosSite() {
                   <input
                     type="text"
                     placeholder="Política de Privacidade"
-                    value={texts.footer.privacyPolicy}
+                    value={texts.footer?.privacyPolicy || ''}
                     onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, privacyPolicy: e.target.value } })}
                     className="px-4 py-2 border rounded-lg"
                   />
                   <input
                     type="text"
                     placeholder="Termos de Uso"
-                    value={texts.footer.termsOfUse}
+                    value={texts.footer?.termsOfUse || ''}
                     onChange={(e) => setTexts({ ...texts, footer: { ...texts.footer, termsOfUse: e.target.value } })}
                     className="px-4 py-2 border rounded-lg"
                   />
