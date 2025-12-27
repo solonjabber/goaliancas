@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { defaultSiteTexts, type SiteTexts } from '@/lib/default-site-texts'
 
 export function useSiteTexts() {
+  // SEMPRE iniciar com defaultSiteTexts - nunca undefined
   const [texts, setTexts] = useState<SiteTexts>(defaultSiteTexts)
   const [loading, setLoading] = useState(true)
 
@@ -9,22 +10,30 @@ export function useSiteTexts() {
     const fetchTexts = async () => {
       try {
         const res = await fetch('/api/admin/site-texts', {
-          cache: 'no-store'
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
         })
         if (res.ok) {
           const data = await res.json()
-          // Garantir que o objeto retornado tem todas as propriedades necessárias
+          // Deep merge para garantir todas as propriedades aninhadas
           setTexts({
-            ...defaultSiteTexts,
-            ...data
+            header: { ...defaultSiteTexts.header, ...(data.header || {}) },
+            whyChooseUs: { ...defaultSiteTexts.whyChooseUs, ...(data.whyChooseUs || {}) },
+            cta: { ...defaultSiteTexts.cta, ...(data.cta || {}) },
+            categoryCards: { ...defaultSiteTexts.categoryCards, ...(data.categoryCards || {}) },
+            footer: { ...defaultSiteTexts.footer, ...(data.footer || {}) }
           })
         } else {
           console.error('Erro ao carregar textos do site:', res.status)
+          // Garante que sempre temos valores padrão
           setTexts(defaultSiteTexts)
         }
       } catch (error) {
         console.error('Erro ao carregar textos do site:', error)
-        // Usa textos padrão em caso de erro
+        // Garante que sempre temos valores padrão
         setTexts(defaultSiteTexts)
       } finally {
         setLoading(false)
@@ -34,5 +43,9 @@ export function useSiteTexts() {
     fetchTexts()
   }, [])
 
-  return { texts, loading }
+  // SEMPRE retornar objeto válido, nunca undefined
+  return {
+    texts: texts || defaultSiteTexts,
+    loading
+  }
 }
