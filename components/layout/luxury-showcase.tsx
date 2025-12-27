@@ -7,19 +7,19 @@ import { Sparkles } from "lucide-react"
 
 const showcaseItems = [
   {
-    image: "/imagens/produtos/alianca-classica-amarela.jpg",
+    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=80",
     title: "Alianças de Ouro Amarelo",
     subtitle: "Tradição e elegância que atravessam gerações",
     link: "/produtos?category=aliancas-de-casamento&metal=ouro_18k"
   },
   {
-    image: "/imagens/produtos/alianca-diamante-branca.jpg",
+    image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=80",
     title: "Brilho Eterno dos Diamantes",
     subtitle: "Sofisticação em cada detalhe",
     link: "/produtos?category=aliancas-de-casamento&stone=diamante"
   },
   {
-    image: "/imagens/produtos/alianca-moderna-rose.jpg",
+    image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=80",
     title: "Ouro Rosé Exclusivo",
     subtitle: "Romantismo e modernidade em perfeita harmonia",
     link: "/produtos?category=aliancas-de-casamento&metal=ouro_rose"

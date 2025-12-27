@@ -48,6 +48,21 @@ export function HeroBanner() {
     const fetchBanners = async () => {
       try {
         const response = await fetch(`${PAYLOAD_API_URL}/hero-banners?where[active][equals]=true&sort=order`)
+
+        // Verificar se a resposta é OK antes de tentar fazer parse
+        if (!response.ok) {
+          console.log('Hero banners endpoint não disponível, usando banners padrão')
+          setIsLoading(false)
+          return
+        }
+
+        const contentType = response.headers.get('content-type')
+        if (!contentType || !contentType.includes('application/json')) {
+          console.log('Hero banners retornou HTML em vez de JSON, usando banners padrão')
+          setIsLoading(false)
+          return
+        }
+
         const data = await response.json()
 
         if (data?.docs && data.docs.length > 0) {
@@ -58,13 +73,13 @@ export function HeroBanner() {
             description: banner.description || '',
             ctaText: banner.ctaText || 'Ver Mais',
             ctaLink: banner.ctaLink || '/produtos',
-            bgColor: 'from-beige to-gold-light', // Pode customizar depois
+            bgColor: 'from-beige to-gold-light',
             imageUrl: banner.image?.url,
           }))
           setBanners(formattedBanners)
         }
       } catch (error) {
-        console.error('Erro ao carregar banners:', error)
+        console.log('Usando banners padrão')
         // Mantém banners padrão em caso de erro
       } finally {
         setIsLoading(false)
