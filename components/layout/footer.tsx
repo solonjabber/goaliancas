@@ -7,6 +7,11 @@ import { useSiteTexts } from "@/hooks/use-site-texts"
 export function Footer() {
   const { texts } = useSiteTexts()
 
+  // Verificar se os dados estão carregados
+  if (!texts || !texts.footer) {
+    return null
+  }
+
   return (
     <footer className="border-t border-gray-200 bg-gray-50">
       <div className="container mx-auto px-4 py-12">

@@ -39,6 +39,11 @@ export function CategoryCards() {
     fetchCategories()
   }, [])
 
+  // Verificar se os dados estão carregados
+  if (!texts || !texts.categoryCards) {
+    return null
+  }
+
   const getDescription = (slug: string) => {
     const descriptionMap: Record<string, keyof typeof texts.categoryCards.descriptions> = {
       'aliancas-de-casamento': 'weddingRings',

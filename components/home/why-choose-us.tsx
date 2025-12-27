@@ -13,6 +13,11 @@ export function WhyChooseUs() {
     service: Phone
   }
 
+  // Verificar se os dados estão carregados
+  if (!texts || !texts.whyChooseUs) {
+    return null
+  }
+
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">

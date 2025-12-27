@@ -7,6 +7,11 @@ import { useSiteTexts } from "@/hooks/use-site-texts"
 export function CTASection() {
   const { texts } = useSiteTexts()
 
+  // Verificar se os dados estão carregados
+  if (!texts || !texts.cta) {
+    return null
+  }
+
   return (
     <section className="bg-gradient-to-r from-gold-light to-beige py-16">
       <div className="container mx-auto px-4 text-center">

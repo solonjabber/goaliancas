@@ -15,7 +15,12 @@ export function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { getTotalItems } = useCartStore()
-  const { texts } = useSiteTexts()
+  const { texts, loading } = useSiteTexts()
+
+  // Garantir que texts.header existe antes de acessar propriedades
+  if (!texts || !texts.header) {
+    return null // ou um skeleton/loading state
+  }
 
   const weddingRingsItems = [
     {
