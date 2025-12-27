@@ -9,11 +9,69 @@ import { CartDrawer } from "@/components/cart/cart-drawer"
 import { useCartStore } from "@/lib/cart-store"
 import { NavDropdown } from "./nav-dropdown"
 import { MobileNavAccordion } from "./mobile-nav-accordion"
+import { useSiteTexts } from "@/hooks/use-site-texts"
 
 export function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { getTotalItems } = useCartStore()
+  const { texts } = useSiteTexts()
+
+  const weddingRingsItems = [
+    {
+      label: texts.header.weddingRingsDropdown.all.label,
+      href: "/produtos?category=aliancas-de-casamento",
+      description: texts.header.weddingRingsDropdown.all.description
+    },
+    {
+      label: texts.header.weddingRingsDropdown.yellow.label,
+      href: "/produtos?category=aliancas-de-casamento&metal=ouro_18k",
+      description: texts.header.weddingRingsDropdown.yellow.description
+    },
+    {
+      label: texts.header.weddingRingsDropdown.white.label,
+      href: "/produtos?category=aliancas-de-casamento&metal=ouro_branco",
+      description: texts.header.weddingRingsDropdown.white.description
+    },
+    {
+      label: texts.header.weddingRingsDropdown.rose.label,
+      href: "/produtos?category=aliancas-de-casamento&metal=ouro_rose",
+      description: texts.header.weddingRingsDropdown.rose.description
+    },
+    {
+      label: texts.header.weddingRingsDropdown.diamonds.label,
+      href: "/produtos?category=aliancas-de-casamento&stone=diamante",
+      description: texts.header.weddingRingsDropdown.diamonds.description
+    },
+  ]
+
+  const graduationRingsItems = [
+    {
+      label: texts.header.graduationRingsDropdown.all.label,
+      href: "/produtos?category=aneis-de-formatura",
+      description: texts.header.graduationRingsDropdown.all.description
+    },
+    {
+      label: texts.header.graduationRingsDropdown.law.label,
+      href: "/produtos?category=aneis-de-formatura&collection=Formatura Direito",
+      description: texts.header.graduationRingsDropdown.law.description
+    },
+    {
+      label: texts.header.graduationRingsDropdown.medicine.label,
+      href: "/produtos?category=aneis-de-formatura&collection=Formatura Medicina",
+      description: texts.header.graduationRingsDropdown.medicine.description
+    },
+    {
+      label: texts.header.graduationRingsDropdown.engineering.label,
+      href: "/produtos?category=aneis-de-formatura&collection=Formatura Engenharia",
+      description: texts.header.graduationRingsDropdown.engineering.description
+    },
+    {
+      label: texts.header.graduationRingsDropdown.administration.label,
+      href: "/produtos?category=aneis-de-formatura&collection=Formatura Administração",
+      description: texts.header.graduationRingsDropdown.administration.description
+    },
+  ]
 
   return (
     <>
@@ -28,9 +86,7 @@ export function Header() {
       )}
 
       {/* Mobile Menu Drawer */}
-      <div className={`fixed left-0 top-0 z-[70] h-full w-64 bg-white shadow-xl transition-transform duration-300 lg:hidden ${
-        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
+      <div className={`fixed left-0 top-0 z-[70] h-full w-64 bg-white shadow-xl transition-transform duration-300 lg:hidden ${ isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full' }`}>
         <div className="flex items-center justify-between border-b border-gray-200 p-4">
           <img
             src="/imagens/logo-transparente-nome.png"
@@ -47,70 +103,18 @@ export function Header() {
             className="border-b border-gray-100 py-3 text-sm font-medium text-gray-700 hover:text-gold"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Produtos
+            {texts.header.menuItems.products}
           </Link>
 
           <MobileNavAccordion
-            title="Alianças de Casamento"
-            items={[
-              {
-                label: "Todas as Alianças",
-                href: "/produtos?category=aliancas-de-casamento",
-                description: "Ver todo o catálogo"
-              },
-              {
-                label: "Ouro Amarelo",
-                href: "/produtos?category=aliancas-de-casamento&metal=ouro_18k",
-                description: "Clássicas e tradicionais"
-              },
-              {
-                label: "Ouro Branco",
-                href: "/produtos?category=aliancas-de-casamento&metal=ouro_branco",
-                description: "Modernas e elegantes"
-              },
-              {
-                label: "Ouro Rosé",
-                href: "/produtos?category=aliancas-de-casamento&metal=ouro_rose",
-                description: "Românticas e exclusivas"
-              },
-              {
-                label: "Com Diamantes",
-                href: "/produtos?category=aliancas-de-casamento&stone=diamante",
-                description: "Sofisticação e brilho"
-              },
-            ]}
+            title={texts.header.menuItems.weddingRings}
+            items={weddingRingsItems}
             onItemClick={() => setIsMobileMenuOpen(false)}
           />
 
           <MobileNavAccordion
-            title="Anéis de Formatura"
-            items={[
-              {
-                label: "Todos os Anéis",
-                href: "/produtos?category=aneis-de-formatura",
-                description: "Ver todo o catálogo"
-              },
-              {
-                label: "Direito",
-                href: "/produtos?category=aneis-de-formatura&collection=Formatura Direito",
-                description: "Cursos de Direito"
-              },
-              {
-                label: "Medicina",
-                href: "/produtos?category=aneis-de-formatura&collection=Formatura Medicina",
-                description: "Cursos de Medicina"
-              },
-              {
-                label: "Engenharia",
-                href: "/produtos?category=aneis-de-formatura&collection=Formatura Engenharia",
-                description: "Cursos de Engenharia"
-              },
-              {
-                label: "Administração",
-                href: "/produtos?category=aneis-de-formatura&collection=Formatura Administração",
-                description: "Cursos de Administração"
-              },
-            ]}
+            title={texts.header.menuItems.graduationRings}
+            items={graduationRingsItems}
             onItemClick={() => setIsMobileMenuOpen(false)}
           />
 
@@ -119,14 +123,14 @@ export function Header() {
             className="border-b border-gray-100 py-3 text-sm font-medium text-gray-700 hover:text-gold"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Sobre Nós
+            {texts.header.menuItems.about}
           </Link>
           <Link
             href="/contato"
             className="border-b border-gray-100 py-3 text-sm font-medium text-gray-700 hover:text-gold"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Contato
+            {texts.header.menuItems.contact}
           </Link>
         </nav>
       </div>
@@ -136,7 +140,7 @@ export function Header() {
       <div className="bg-beige py-2">
         <div className="container mx-auto px-4">
           <p className="text-center text-sm text-gray-700">
-            Alianças de Casamento em Ouro 18k | Entrega em Curitiba e Região
+            {texts.header.topBar}
           </p>
         </div>
       </div>
@@ -167,82 +171,30 @@ export function Header() {
               href="/produtos"
               className="text-sm font-medium text-gray-700 transition-colors hover:text-gold"
             >
-              Produtos
+              {texts.header.menuItems.products}
             </Link>
 
             <NavDropdown
-              title="Alianças de Casamento"
-              items={[
-                {
-                  label: "Todas as Alianças",
-                  href: "/produtos?category=aliancas-de-casamento",
-                  description: "Ver todo o catálogo"
-                },
-                {
-                  label: "Ouro Amarelo",
-                  href: "/produtos?category=aliancas-de-casamento&metal=ouro_18k",
-                  description: "Clássicas e tradicionais"
-                },
-                {
-                  label: "Ouro Branco",
-                  href: "/produtos?category=aliancas-de-casamento&metal=ouro_branco",
-                  description: "Modernas e elegantes"
-                },
-                {
-                  label: "Ouro Rosé",
-                  href: "/produtos?category=aliancas-de-casamento&metal=ouro_rose",
-                  description: "Românticas e exclusivas"
-                },
-                {
-                  label: "Com Diamantes",
-                  href: "/produtos?category=aliancas-de-casamento&stone=diamante",
-                  description: "Sofisticação e brilho"
-                },
-              ]}
+              title={texts.header.menuItems.weddingRings}
+              items={weddingRingsItems}
             />
 
             <NavDropdown
-              title="Anéis de Formatura"
-              items={[
-                {
-                  label: "Todos os Anéis",
-                  href: "/produtos?category=aneis-de-formatura",
-                  description: "Ver todo o catálogo"
-                },
-                {
-                  label: "Direito",
-                  href: "/produtos?category=aneis-de-formatura&collection=Formatura Direito",
-                  description: "Cursos de Direito"
-                },
-                {
-                  label: "Medicina",
-                  href: "/produtos?category=aneis-de-formatura&collection=Formatura Medicina",
-                  description: "Cursos de Medicina"
-                },
-                {
-                  label: "Engenharia",
-                  href: "/produtos?category=aneis-de-formatura&collection=Formatura Engenharia",
-                  description: "Cursos de Engenharia"
-                },
-                {
-                  label: "Administração",
-                  href: "/produtos?category=aneis-de-formatura&collection=Formatura Administração",
-                  description: "Cursos de Administração"
-                },
-              ]}
+              title={texts.header.menuItems.graduationRings}
+              items={graduationRingsItems}
             />
 
             <Link
               href="/sobre"
               className="text-sm font-medium text-gray-700 transition-colors hover:text-gold"
             >
-              Sobre Nós
+              {texts.header.menuItems.about}
             </Link>
             <Link
               href="/contato"
               className="text-sm font-medium text-gray-700 transition-colors hover:text-gold"
             >
-              Contato
+              {texts.header.menuItems.contact}
             </Link>
           </nav>
 

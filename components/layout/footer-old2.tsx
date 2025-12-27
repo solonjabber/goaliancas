@@ -44,7 +44,7 @@ export function Footer() {
           {/* Quick Links */}
           <div>
             <h3 className="font-heading text-lg font-semibold text-gray-900">
-              {texts.footer.quickLinks.title}
+              Links Rápidos
             </h3>
             <ul className="mt-4 space-y-2">
               <li>
@@ -52,7 +52,7 @@ export function Footer() {
                   href="/produtos"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
-                  {texts.footer.quickLinks.allProducts}
+                  Todos os Produtos
                 </Link>
               </li>
               <li>
@@ -60,7 +60,7 @@ export function Footer() {
                   href="/aliancas-de-casamento"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
-                  {texts.footer.quickLinks.weddingRings}
+                  Alianças de Casamento
                 </Link>
               </li>
               <li>
@@ -68,7 +68,7 @@ export function Footer() {
                   href="/aneis-de-formatura"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
-                  {texts.footer.quickLinks.graduationRings}
+                  Anéis de Formatura
                 </Link>
               </li>
               <li>
@@ -76,7 +76,7 @@ export function Footer() {
                   href="/sobre"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
-                  {texts.footer.quickLinks.about}
+                  Sobre Nós
                 </Link>
               </li>
             </ul>
@@ -85,7 +85,7 @@ export function Footer() {
           {/* Customer Service */}
           <div>
             <h3 className="font-heading text-lg font-semibold text-gray-900">
-              {texts.footer.customerService.title}
+              Atendimento
             </h3>
             <ul className="mt-4 space-y-2">
               <li>
@@ -93,7 +93,7 @@ export function Footer() {
                   href="/contato"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
-                  {texts.footer.customerService.contact}
+                  Fale Conosco
                 </Link>
               </li>
               <li>
@@ -101,7 +101,7 @@ export function Footer() {
                   href="/personalizacao"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
-                  {texts.footer.customerService.customization}
+                  Personalização
                 </Link>
               </li>
               <li>
@@ -109,7 +109,7 @@ export function Footer() {
                   href="/garantia"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
-                  {texts.footer.customerService.warranty}
+                  Garantia
                 </Link>
               </li>
               <li>
@@ -117,7 +117,7 @@ export function Footer() {
                   href="/faq"
                   className="text-sm text-gray-600 hover:text-gold"
                 >
-                  {texts.footer.customerService.faq}
+                  Perguntas Frequentes
                 </Link>
               </li>
             </ul>
@@ -126,7 +126,7 @@ export function Footer() {
           {/* Contact */}
           <div>
             <h3 className="font-heading text-lg font-semibold text-gray-900">
-              {texts.footer.contactTitle}
+              Contato
             </h3>
             <ul className="mt-4 space-y-3">
               <li className="flex items-start gap-2">
@@ -162,13 +162,13 @@ export function Footer() {
                 href="/privacidade"
                 className="text-sm text-gray-600 hover:text-gold"
               >
-                {texts.footer.privacyPolicy}
+                Política de Privacidade
               </Link>
               <Link
                 href="/termos"
                 className="text-sm text-gray-600 hover:text-gold"
               >
-                {texts.footer.termsOfUse}
+                Termos de Uso
               </Link>
             </div>
           </div>
