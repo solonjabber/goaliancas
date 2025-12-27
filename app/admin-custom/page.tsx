@@ -84,7 +84,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-amber-500">
             <div className="flex items-center justify-between">
               <div>
@@ -117,7 +117,7 @@ export default function AdminDashboard() {
         {/* Quick Actions */}
         <div className="bg-white rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Link
               href="/admin-custom/produtos"
               className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-amber-500 hover:bg-amber-50 transition-all group"
@@ -145,6 +145,21 @@ export default function AdminDashboard() {
               <div className="ml-4">
                 <h3 className="font-semibold text-gray-900">Gerenciar Categorias</h3>
                 <p className="text-sm text-gray-600">Organizar categorias de produtos</p>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin-custom/textos-site"
+              className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all group"
+            >
+              <div className="bg-purple-100 rounded-lg p-3 group-hover:bg-purple-200 transition-colors">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <h3 className="font-semibold text-gray-900">Textos do Site</h3>
+                <p className="text-sm text-gray-600">Editar todos os textos da página inicial</p>
               </div>
             </Link>
 
