@@ -42,7 +42,12 @@ export function LuxuryShowcase() {
     return () => clearInterval(interval)
   }, [])
 
-  const currentItem = showcaseItems[currentIndex]
+  const currentItem = showcaseItems[currentIndex] || showcaseItems[0]
+
+  // Verificação de segurança
+  if (!currentItem) {
+    return null
+  }
 
   return (
     <section className="relative overflow-hidden bg-gray-900 py-24 md:py-32">
@@ -56,8 +61,8 @@ export function LuxuryShowcase() {
             }`}
           >
             <img
-              src={item.image}
-              alt={item.title}
+              src={item?.image || ''}
+              alt={item?.title || ''}
               className="h-full w-full object-cover"
             />
             {/* Overlay escuro para melhor legibilidade */}
@@ -91,10 +96,10 @@ export function LuxuryShowcase() {
             }`}
           >
             <h2 className="font-heading text-4xl font-bold text-white md:text-5xl lg:text-6xl">
-              {currentItem.title}
+              {currentItem?.title || 'Alianças de Ouro'}
             </h2>
             <p className="mt-4 text-xl text-gray-200 md:text-2xl">
-              {currentItem.subtitle}
+              {currentItem?.subtitle || 'Tradição e elegância'}
             </p>
 
             {/* Linha decorativa dourada */}
@@ -102,7 +107,7 @@ export function LuxuryShowcase() {
 
             {/* Botões */}
             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Link href={currentItem.link}>
+              <Link href={currentItem?.link || '/produtos'}>
                 <Button
                   size="lg"
                   className="group relative overflow-hidden bg-gold text-white hover:bg-gold/90"
@@ -125,7 +130,7 @@ export function LuxuryShowcase() {
 
           {/* Indicadores de página */}
           <div className="mt-12 flex justify-center gap-2">
-            {showcaseItems.map((_, index) => (
+            {showcaseItems.map((item, index) => (
               <button
                 key={index}
                 onClick={() => {
@@ -140,7 +145,7 @@ export function LuxuryShowcase() {
                     ? 'w-8 bg-gold'
                     : 'w-2 bg-white/50 hover:bg-white/75'
                 }`}
-                aria-label={`Ver ${showcaseItems[index].title}`}
+                aria-label={`Ver ${item?.title || 'showcase'}`}
               />
             ))}
           </div>
