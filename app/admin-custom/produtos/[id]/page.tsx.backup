@@ -42,38 +42,6 @@ export default function EditarProduto() {
     loadData()
   }, [router, params.id])
 
-  // Auto-save gallery when it changes
-  useEffect(() => {
-    if (loading) return // Don't save during initial load
-
-    const saveGallery = async () => {
-      try {
-        const payload = {
-          gallery: gallery.map(img => ({
-            media: {
-              id: img.media.id,
-              url: img.media.url,
-              alt: img.media.alt || '',
-              filename: img.media.filename,
-            },
-            isPrimary: img.isPrimary,
-            id: img.id,
-          })),
-        }
-
-        await fetch(`/api/admin/produtos/${params.id}/gallery`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        })
-      } catch (error) {
-        console.error('Erro ao salvar galeria automaticamente:', error)
-      }
-    }
-
-    saveGallery()
-  }, [gallery, loading, params.id])
-
   const loadData = async () => {
     try {
       // Carregar categorias
