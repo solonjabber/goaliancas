@@ -22,61 +22,62 @@ export function Header() {
     return null // ou um skeleton/loading state
   }
 
-  const weddingRingsItems = [
+  // Criar arrays DEPOIS da verificação para evitar erros
+  const weddingRingsItems = texts.header?.weddingRingsDropdown ? [
     {
-      label: texts.header.weddingRingsDropdown.all.label,
+      label: texts.header.weddingRingsDropdown.all?.label || 'Todas as Alianças',
       href: "/produtos?category=aliancas-de-casamento",
-      description: texts.header.weddingRingsDropdown.all.description
+      description: texts.header.weddingRingsDropdown.all?.description || 'Ver todo o catálogo'
     },
     {
-      label: texts.header.weddingRingsDropdown.yellow.label,
+      label: texts.header.weddingRingsDropdown.yellow?.label || 'Ouro Amarelo',
       href: "/produtos?category=aliancas-de-casamento&metal=ouro_18k",
-      description: texts.header.weddingRingsDropdown.yellow.description
+      description: texts.header.weddingRingsDropdown.yellow?.description || 'Clássicas e tradicionais'
     },
     {
-      label: texts.header.weddingRingsDropdown.white.label,
+      label: texts.header.weddingRingsDropdown.white?.label || 'Ouro Branco',
       href: "/produtos?category=aliancas-de-casamento&metal=ouro_branco",
-      description: texts.header.weddingRingsDropdown.white.description
+      description: texts.header.weddingRingsDropdown.white?.description || 'Modernas e elegantes'
     },
     {
-      label: texts.header.weddingRingsDropdown.rose.label,
+      label: texts.header.weddingRingsDropdown.rose?.label || 'Ouro Rosé',
       href: "/produtos?category=aliancas-de-casamento&metal=ouro_rose",
-      description: texts.header.weddingRingsDropdown.rose.description
+      description: texts.header.weddingRingsDropdown.rose?.description || 'Românticas e exclusivas'
     },
     {
-      label: texts.header.weddingRingsDropdown.diamonds.label,
+      label: texts.header.weddingRingsDropdown.diamonds?.label || 'Com Diamantes',
       href: "/produtos?category=aliancas-de-casamento&stone=diamante",
-      description: texts.header.weddingRingsDropdown.diamonds.description
+      description: texts.header.weddingRingsDropdown.diamonds?.description || 'Sofisticação e brilho'
     },
-  ]
+  ] : []
 
-  const graduationRingsItems = [
+  const graduationRingsItems = texts.header?.graduationRingsDropdown ? [
     {
-      label: texts.header.graduationRingsDropdown.all.label,
+      label: texts.header.graduationRingsDropdown.all?.label || 'Todos os Anéis',
       href: "/produtos?category=aneis-de-formatura",
-      description: texts.header.graduationRingsDropdown.all.description
+      description: texts.header.graduationRingsDropdown.all?.description || 'Ver todo o catálogo'
     },
     {
-      label: texts.header.graduationRingsDropdown.law.label,
+      label: texts.header.graduationRingsDropdown.law?.label || 'Direito',
       href: "/produtos?category=aneis-de-formatura&collection=Formatura Direito",
-      description: texts.header.graduationRingsDropdown.law.description
+      description: texts.header.graduationRingsDropdown.law?.description || 'Cursos de Direito'
     },
     {
-      label: texts.header.graduationRingsDropdown.medicine.label,
+      label: texts.header.graduationRingsDropdown.medicine?.label || 'Medicina',
       href: "/produtos?category=aneis-de-formatura&collection=Formatura Medicina",
-      description: texts.header.graduationRingsDropdown.medicine.description
+      description: texts.header.graduationRingsDropdown.medicine?.description || 'Cursos de Medicina'
     },
     {
-      label: texts.header.graduationRingsDropdown.engineering.label,
+      label: texts.header.graduationRingsDropdown.engineering?.label || 'Engenharia',
       href: "/produtos?category=aneis-de-formatura&collection=Formatura Engenharia",
-      description: texts.header.graduationRingsDropdown.engineering.description
+      description: texts.header.graduationRingsDropdown.engineering?.description || 'Cursos de Engenharia'
     },
     {
-      label: texts.header.graduationRingsDropdown.administration.label,
+      label: texts.header.graduationRingsDropdown.administration?.label || 'Administração',
       href: "/produtos?category=aneis-de-formatura&collection=Formatura Administração",
-      description: texts.header.graduationRingsDropdown.administration.description
+      description: texts.header.graduationRingsDropdown.administration?.description || 'Cursos de Administração'
     },
-  ]
+  ] : []
 
   return (
     <>
