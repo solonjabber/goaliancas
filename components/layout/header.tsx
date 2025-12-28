@@ -9,6 +9,7 @@ import { CartDrawer } from "@/components/cart/cart-drawer"
 import { useCartStore } from "@/lib/cart-store"
 import { NavDropdown } from "./nav-dropdown"
 import { MobileNavAccordion } from "./mobile-nav-accordion"
+import { SearchBar } from "./search-bar"
 import { useSiteTexts } from "@/hooks/use-site-texts"
 
 export function Header() {
@@ -92,7 +93,7 @@ export function Header() {
       )}
 
       {/* Mobile Menu Drawer */}
-      <div className={`fixed left-0 top-0 z-[70] h-full w-64 bg-white shadow-xl transition-transform duration-300 lg:hidden ${ isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full' }`}>
+      <div className={`fixed left-0 top-0 z-[70] h-full w-80 bg-white shadow-xl transition-transform duration-300 lg:hidden ${ isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full' }`}>
         <div className="flex items-center justify-between border-b border-gray-200 p-4">
           <img
             src="/imagens/logo-transparente-nome.png"
@@ -103,6 +104,12 @@ export function Header() {
             <X className="h-6 w-6 text-gray-700" />
           </button>
         </div>
+
+        {/* Search Bar - Mobile */}
+        <div className="border-b border-gray-200 p-4">
+          <SearchBar />
+        </div>
+
         <nav className="flex flex-col p-4">
           <Link
             href="/produtos"
@@ -153,7 +160,7 @@ export function Header() {
 
       {/* Main Header */}
       <div className="container mx-auto px-4">
-        <div className="flex h-[120px] items-center justify-between">
+        <div className="flex h-[120px] items-center justify-between gap-4">
           {/* Mobile Menu Button */}
           <button
             className="lg:hidden"
@@ -163,13 +170,18 @@ export function Header() {
           </button>
 
           {/* Logo */}
-          <Link href="/" className="flex items-center py-2">
+          <Link href="/" className="flex items-center py-2 flex-shrink-0">
             <img
               src="/imagens/logo-transparente-nome.png"
               alt="GO Alianças - Alianças de Casamento em Ouro 18k"
               className="h-[63px] w-auto max-h-full md:h-[71px]"
             />
           </Link>
+
+          {/* Search Bar - Desktop */}
+          <div className="hidden lg:flex lg:flex-1 lg:max-w-md lg:mx-8">
+            <SearchBar />
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex lg:items-center lg:gap-8">

@@ -31,8 +31,9 @@ export function ProdutosContent() {
     const metal = searchParams.get('metal')
     const stone = searchParams.get('stone')
     const collection = searchParams.get('collection')
+    const searchQuery = searchParams.get('search')
 
-    console.log('[FILTROS] Parâmetros da URL:', { category, metal, stone, collection })
+    console.log('[FILTROS] Parâmetros da URL:', { category, metal, stone, collection, search: searchQuery })
 
     // Criar filtros baseado nos parâmetros da URL
     const newFilters = {
@@ -54,7 +55,7 @@ export function ProdutosContent() {
 
     useSearchStore.setState({
       filters: newFilters,
-      query: ''
+      query: searchQuery || ''
     })
 
     // Executar busca
