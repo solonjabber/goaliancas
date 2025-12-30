@@ -3,6 +3,7 @@ import { WhyChooseUs } from "@/components/home/why-choose-us"
 import { CTASection } from "@/components/home/cta-section"
 import { Footer } from "@/components/layout/footer"
 import { HeroBanner } from "@/components/layout/hero-banner"
+import { HeroSearch } from "@/components/home/hero-search"
 import { CategoryCards } from "@/components/layout/category-cards"
 import { FeaturedProducts } from "@/components/layout/featured-products"
 import { LuxuryShowcase } from "@/components/layout/luxury-showcase"
@@ -18,6 +19,9 @@ export default function Home() {
       <main>
         {/* Hero Banner */}
         <HeroBanner />
+
+        {/* Search Section */}
+        <HeroSearch />
 
         {/* Category Cards */}
         <CategoryCards />
