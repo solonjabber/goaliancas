@@ -4,7 +4,7 @@ import { SearchBar } from "@/components/layout/search-bar"
 
 export function HeroSearch() {
   return (
-    <section className="relative -mt-8 lg:-mt-12 z-10">
+    <section className="relative -mt-8 z-10 lg:hidden">
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-3xl">
           {/* Card com sombra para destacar */}
