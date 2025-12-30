@@ -1,6 +1,11 @@
 // Serviço de API para buscar dados do Payload CMS
+import { API_CONFIG } from './config'
+import { mapPayloadProduct as mapProduct } from './product-mapper'
 
-const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
+const PAYLOAD_API_URL = `${API_CONFIG.PAYLOAD_URL}/api`
+
+// Re-export for backwards compatibility
+export { mapProduct as mapPayloadProduct }
 
 // Helper function para fazer requisições
 async function fetchFromPayload(endpoint: string, options = {}) {
@@ -138,40 +143,4 @@ export function getImageUrl(media: any): string {
   return media.url || ''
 }
 
-// Converter produto do Payload para formato do frontend
-export function mapPayloadProduct(payloadProduct: any): any {
-  const images = payloadProduct.gallery?.map((item: any) => {
-    const media = item.media
-    if (!media) return ''
-    // Se media é um objeto com URL
-    if (typeof media === 'object' && media.url) {
-      return media.url.startsWith('http') ? media.url : `${PAYLOAD_API_URL}${media.url}`
-    }
-    // Se media é apenas um ID
-    if (typeof media === 'string') {
-      return `${PAYLOAD_API_URL}/api/media/${media}`
-    }
-    return ''
-  }).filter(Boolean) || []
-
-  return {
-    id: payloadProduct.id,
-    name: payloadProduct.name,
-    slug: payloadProduct.slug,
-    description: payloadProduct.description,
-    price: payloadProduct.price,
-    images,
-    category: payloadProduct.category?.slug || payloadProduct.category || '',
-    metalType: payloadProduct.material,
-    collection: payloadProduct.productCollection,
-    weight: payloadProduct.weight,
-    width: payloadProduct.dimensions ? parseFloat(payloadProduct.dimensions.match(/\d+/)?.[0] || '0') : undefined,
-    inStock: payloadProduct.inStock,
-    featured: payloadProduct.featured,
-    discount: payloadProduct.salePrice ? Math.round((1 - payloadProduct.salePrice / payloadProduct.price) * 100) : undefined,
-    specifications: [],
-    customizable: payloadProduct.allowCustomization,
-    keywords: [],
-    tags: payloadProduct.tags || [],
-  }
-}
+// mapPayloadProduct is now imported from './product-mapper' and re-exported above

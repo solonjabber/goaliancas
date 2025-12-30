@@ -1,7 +1,9 @@
 import { create } from 'zustand'
 import { Product, ProductCategory, MetalType, ProductFilters } from './types'
+import { API_CONFIG } from './config'
+import { mapPayloadProduct } from './product-mapper'
 
-const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
+const PAYLOAD_API_URL = `${API_CONFIG.PAYLOAD_URL}/api`
 
 interface FilterState {
   filters: ProductFilters
@@ -27,60 +29,14 @@ const initialFilters: ProductFilters = {
   searchQuery: '',
 }
 
-// Helper para mapear produtos do Payload
-function mapPayloadProduct(payloadProduct: any, galleries: Record<string, any[]> = {}): Product {
-  const PAYLOAD_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
-
-  // Buscar gallery do Vercel Blob Storage
+// Helper function to enrich product with gallery from Vercel Blob
+function enrichProductWithGallery(payloadProduct: any, galleries: Record<string, any[]> = {}): Product {
   const productGallery = galleries[payloadProduct.id] || []
-
-  // Ordenar: imagem principal primeiro
   const sortedGallery = productGallery.sort((a: any, b: any) =>
     (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0)
   )
 
-  const images = sortedGallery.map((item: any) => item.media?.url || '').filter(Boolean)
-
-  // Construir especificações
-  const specifications: string[] = []
-  if (payloadProduct.material) {
-    const materialLabels: Record<string, string> = {
-      'ouro_18k': 'Ouro 18k',
-      'ouro_14k': 'Ouro 14k',
-      'prata_925': 'Prata 925',
-      'ouro_branco': 'Ouro Branco',
-      'ouro_rose': 'Ouro Rose'
-    }
-    const materialLabel = materialLabels[payloadProduct.material] || payloadProduct.material
-    specifications.push(`Material: ${materialLabel}`)
-  }
-  if (payloadProduct.weight) {
-    specifications.push(`Peso: ${payloadProduct.weight}g`)
-  }
-  if (payloadProduct.dimensions) {
-    specifications.push(`Dimensões: ${payloadProduct.dimensions}`)
-  }
-
-  return {
-    id: payloadProduct.id,
-    name: payloadProduct.name,
-    slug: payloadProduct.slug,
-    description: payloadProduct.description,
-    price: payloadProduct.price,
-    salePrice: payloadProduct.salePrice,
-    images,
-    category: payloadProduct.category?.slug || payloadProduct.category || '',
-    metalType: payloadProduct.material,
-    collection: payloadProduct.productCollection,
-    weight: payloadProduct.weight,
-    inStock: payloadProduct.inStock,
-    featured: payloadProduct.featured,
-    discount: payloadProduct.salePrice ? Math.round((1 - payloadProduct.salePrice / payloadProduct.price) * 100) : undefined,
-    specifications,
-    customizable: payloadProduct.allowCustomization,
-    keywords: [],
-    tags: payloadProduct.tags || [],
-  } as Product
+  return mapPayloadProduct(payloadProduct, sortedGallery)
 }
 
 export const useFilterStore = create<FilterState>((set, get) => ({
@@ -119,7 +75,7 @@ export const useFilterStore = create<FilterState>((set, get) => ({
         console.error('[LOAD_PRODUCTS] Erro ao carregar galleries:', error)
       }
 
-      const products = (data?.docs || []).map((product: any) => mapPayloadProduct(product, galleries))
+      const products = (data?.docs || []).map((product: any) => enrichProductWithGallery(product, galleries))
 
       console.log('[LOAD_PRODUCTS] Produtos mapeados:', products.length)
       console.log('[LOAD_PRODUCTS] Exemplo mapeado:', products[0])

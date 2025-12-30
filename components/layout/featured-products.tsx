@@ -5,8 +5,10 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { ProductCard } from "@/components/product/product-card"
 import { Button } from "@/components/ui/button"
+import { API_CONFIG } from "@/lib/config"
+import { mapPayloadProduct } from "@/lib/product-mapper"
 
-const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
+const PAYLOAD_API_URL = `${API_CONFIG.PAYLOAD_URL}/api`
 
 export function FeaturedProducts() {
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([])
@@ -34,40 +36,9 @@ export function FeaturedProducts() {
         console.log('📦 Dados recebidos:', data)
         console.log('📊 Total de produtos em destaque:', data?.docs?.length || 0)
 
-        const products = (data?.docs || []).map((payloadProduct: any) => {
-          const images = payloadProduct.gallery?.map((item: any) => {
-            const media = item.media
-            if (!media) return ''
-            if (typeof media === 'object' && media.url) {
-              return media.url.startsWith('http') ? media.url : `${PAYLOAD_API_URL}${media.url}`
-            }
-            if (typeof media === 'string') {
-              return `${PAYLOAD_API_URL}/api/media/${media}`
-            }
-            return ''
-          }).filter(Boolean) || []
-
-          return {
-            id: payloadProduct.id,
-            name: payloadProduct.name,
-            slug: payloadProduct.slug,
-            description: payloadProduct.description,
-            price: payloadProduct.price,
-            images,
-            category: payloadProduct.category?.slug || payloadProduct.category || '',
-            metalType: payloadProduct.material,
-            collection: payloadProduct.productCollection,
-            weight: payloadProduct.weight,
-            width: payloadProduct.dimensions ? parseFloat(payloadProduct.dimensions.match(/\d+/)?.[0] || '0') : undefined,
-            inStock: payloadProduct.inStock,
-            featured: payloadProduct.featured,
-            discount: payloadProduct.salePrice ? Math.round((1 - payloadProduct.salePrice / payloadProduct.price) * 100) : undefined,
-            specifications: [],
-            customizable: payloadProduct.allowCustomization,
-            keywords: [],
-            tags: payloadProduct.tags || [],
-          }
-        })
+        const products = (data?.docs || []).map((payloadProduct: any) =>
+          mapPayloadProduct(payloadProduct)
+        )
 
         setFeaturedProducts(products)
       } catch (error) {
