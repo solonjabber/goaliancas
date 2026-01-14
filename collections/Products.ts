@@ -124,11 +124,34 @@ export const Products: CollectionConfig = {
       maxRows: 20,
       fields: [
         {
+          name: 'mediaType',
+          type: 'select',
+          required: true,
+          defaultValue: 'upload',
+          options: [
+            { label: 'Upload (Imagem/Vídeo)', value: 'upload' },
+            { label: 'Vídeo YouTube', value: 'youtube' },
+          ],
+          label: 'Tipo de Mídia',
+        },
+        {
           name: 'media',
           type: 'upload',
           relationTo: 'media',
-          required: true,
           label: 'Imagem ou Vídeo',
+          admin: {
+            condition: (data, siblingData) => siblingData?.mediaType === 'upload',
+          },
+        },
+        {
+          name: 'youtubeUrl',
+          type: 'text',
+          label: 'URL do YouTube',
+          admin: {
+            description: 'Cole o link completo do vídeo. Ex: https://www.youtube.com/watch?v=ABC123 ou https://youtu.be/ABC123',
+            placeholder: 'https://www.youtube.com/watch?v=...',
+            condition: (data, siblingData) => siblingData?.mediaType === 'youtube',
+          },
         },
         {
           name: 'isPrimary',
@@ -157,12 +180,56 @@ export const Products: CollectionConfig = {
       min: 0,
     },
 
+    // Tamanho/Aro disponíveis
+    {
+      name: 'availableSizes',
+      type: 'select',
+      hasMany: true,
+      options: [
+        { label: 'Aro 10', value: '10' },
+        { label: 'Aro 11', value: '11' },
+        { label: 'Aro 12', value: '12' },
+        { label: 'Aro 13', value: '13' },
+        { label: 'Aro 14', value: '14' },
+        { label: 'Aro 15', value: '15' },
+        { label: 'Aro 16', value: '16' },
+        { label: 'Aro 17', value: '17' },
+        { label: 'Aro 18', value: '18' },
+        { label: 'Aro 19', value: '19' },
+        { label: 'Aro 20', value: '20' },
+        { label: 'Aro 21', value: '21' },
+        { label: 'Aro 22', value: '22' },
+        { label: 'Aro 23', value: '23' },
+        { label: 'Aro 24', value: '24' },
+        { label: 'Aro 25', value: '25' },
+        { label: 'Aro 26', value: '26' },
+        { label: 'Aro 27', value: '27' },
+        { label: 'Aro 28', value: '28' },
+        { label: 'Aro 29', value: '29' },
+        { label: 'Aro 30', value: '30' },
+      ],
+      label: 'Tamanhos/Aros Disponíveis',
+      admin: {
+        description: 'Selecione todos os tamanhos disponíveis para este produto',
+      },
+    },
+
     // Personalização
     {
       name: 'allowCustomization',
       type: 'checkbox',
       defaultValue: true,
       label: 'Permite Personalização/Gravação',
+    },
+    {
+      name: 'engravingPrice',
+      type: 'number',
+      defaultValue: 100,
+      label: 'Preço da Gravação Interna (R$)',
+      admin: {
+        description: 'Valor adicional para gravação interna (padrão: R$ 100)',
+        condition: (data) => data.allowCustomization === true,
+      },
     },
 
     // Destaque
@@ -173,6 +240,15 @@ export const Products: CollectionConfig = {
       label: 'Produto em Destaque',
       admin: {
         description: 'Produtos em destaque aparecem na página inicial',
+      },
+    },
+    {
+      name: 'isNewRelease',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Lançamento',
+      admin: {
+        description: 'Produtos marcados como lançamentos aparecem na seção Lançamentos da página inicial',
       },
     },
 

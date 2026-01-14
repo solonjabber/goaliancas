@@ -24,8 +24,28 @@ import {
 import { ProductCard } from "@/components/product/product-card"
 
 // Garantir que a URL sempre aponta para a API do Payload CMS
-const PAYLOAD_API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://payload-api-production-9a40.up.railway.app'
+const PAYLOAD_API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.158-173-2-44.nip.io'
 const PAYLOAD_API_URL = `${PAYLOAD_API_BASE}/api`
+
+// Função para extrair ID do YouTube
+function extractYoutubeId(url: string): string | null {
+  if (!url) return null
+
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=)([^&\s]+)/,
+    /(?:youtu\.be\/)([^&\s]+)/,
+    /(?:youtube\.com\/embed\/)([^&\s]+)/,
+  ]
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match && match[1]) {
+      return match[1]
+    }
+  }
+
+  return null
+}
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -35,7 +55,10 @@ export default function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const [selectedSize, setSelectedSize] = useState<string>("")
+  const [includeEngraving, setIncludeEngraving] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [galleryItems, setGalleryItems] = useState<Array<{type: 'image' | 'youtube', src: string}>>([])
   const { addItem } = useCartStore()
   const { allProducts } = useFilterStore()
 
@@ -44,29 +67,52 @@ export default function ProductDetailPage() {
     const fetchProduct = async () => {
       setIsLoading(true)
       try {
-        const response = await fetch(`${PAYLOAD_API_URL}/products?where[slug][equals]=${slug}&where[status][equals]=published&limit=1`)
+        const response = await fetch(`${PAYLOAD_API_URL}/vps-products`)
         const data = await response.json()
 
         if (data?.docs && data.docs.length > 0) {
-          const payloadProduct = data.docs[0]
-
-          // Buscar gallery do Vercel Blob Storage
-          let galleryImages: string[] = []
-          try {
-            const galleryResponse = await fetch(`/api/admin/produtos/${payloadProduct.id}/gallery`)
-            if (galleryResponse.ok) {
-              const galleryData = await galleryResponse.json()
-              if (galleryData.gallery && Array.isArray(galleryData.gallery)) {
-                // Ordenar: imagem principal primeiro
-                const sortedGallery = galleryData.gallery.sort((a: any, b: any) =>
-                  (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0)
-                )
-                galleryImages = sortedGallery.map((item: any) => item.media?.url || '')
-              }
-            }
-          } catch (error) {
-            console.error('Erro ao carregar gallery:', error)
+          // Filtrar pelo slug
+          const payloadProduct = data.docs.find((p: any) => p.slug === slug)
+          
+          if (!payloadProduct) {
+            console.error("Produto não encontrado:", slug)
+            setIsLoading(false)
+            return
           }
+
+          // Processar galeria do produto (imagens e vídeos YouTube)
+          let galleryImages: string[] = []
+          let processedGalleryItems: Array<{type: 'image' | 'youtube', src: string}> = []
+
+          if (payloadProduct.gallery && Array.isArray(payloadProduct.gallery)) {
+            // Ordenar: imagem principal primeiro
+            const sortedGallery = payloadProduct.gallery.sort((a: any, b: any) =>
+              (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0)
+            )
+
+            // Processar cada item da galeria
+            sortedGallery.forEach((item: any) => {
+              if (item.mediaType === 'youtube' && item.youtubeUrl) {
+                // Extrair ID do YouTube
+                const videoId = extractYoutubeId(item.youtubeUrl)
+                if (videoId) {
+                  processedGalleryItems.push({
+                    type: 'youtube',
+                    src: videoId
+                  })
+                  galleryImages.push(`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`)
+                }
+              } else if (item.media?.url) {
+                processedGalleryItems.push({
+                  type: 'image',
+                  src: item.media.url
+                })
+                galleryImages.push(item.media.url)
+              }
+            })
+          }
+
+          setGalleryItems(processedGalleryItems)
 
           // Construir especificações a partir dos campos do produto
           const specifications: string[] = []
@@ -113,6 +159,8 @@ export default function ProductDetailPage() {
             customizable: payloadProduct.allowCustomization,
             keywords: [],
             tags: payloadProduct.tags || [],
+            availableSizes: payloadProduct.availableSizes || [],
+            engravingPrice: payloadProduct.engravingPrice || 100,
           } as Product
 
           setProduct(mappedProduct)
@@ -154,10 +202,22 @@ export default function ProductDetailPage() {
     )
   }
 
-  const finalPrice = product.salePrice || product.price
+  // Calcular preço final incluindo gravação se selecionada
+  const basePrice = product.salePrice || product.price
+  const engravingCost = includeEngraving ? (product.engravingPrice || 100) : 0
+  const finalPrice = basePrice + engravingCost
 
-  const whatsappMessage = `Olá! Tenho interesse no produto: ${product.name} - ${formatCurrency(finalPrice)}`
-  const whatsappLink = getWhatsAppLink("41999999999", whatsappMessage)
+  // Montar mensagem do WhatsApp com todas as opções selecionadas
+  let whatsappMessage = `Olá! Tenho interesse no produto:\n\n*${product.name}*\n`
+  if (selectedSize) {
+    whatsappMessage += `Tamanho: Aro ${selectedSize}\n`
+  }
+  if (includeEngraving) {
+    whatsappMessage += `Com gravação interna (+${formatCurrency(engravingCost)})\n`
+  }
+  whatsappMessage += `\n*Valor Total: ${formatCurrency(finalPrice)}*`
+
+  const whatsappLink = getWhatsAppLink("5567992028048", whatsappMessage)
 
   if (isLoading) {
     return (
@@ -208,14 +268,24 @@ export default function ProductDetailPage() {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {/* Image Gallery */}
             <div>
-              {/* Main Image */}
+              {/* Main Image/Video */}
               <div className="aspect-square overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
-                {product.images[selectedImage] ? (
-                  <img
-                    src={product.images[selectedImage]}
-                    alt={product.name}
-                    className="h-full w-full object-cover"
-                  />
+                {galleryItems[selectedImage] ? (
+                  galleryItems[selectedImage].type === 'youtube' ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${galleryItems[selectedImage].src}?autoplay=0&mute=0&controls=1`}
+                      title={product.name}
+                      className="h-full w-full"
+                      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <img
+                      src={galleryItems[selectedImage].src}
+                      alt={product.name}
+                      className="h-full w-full object-cover"
+                    />
+                  )
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-beige p-16">
                     <img
@@ -288,13 +358,27 @@ export default function ProductDetailPage() {
                       De: {formatCurrency(product.price)}
                     </p>
                     <p className="text-4xl font-bold text-gold">
-                      {formatCurrency(finalPrice)}
+                      {formatCurrency(basePrice)}
                     </p>
                   </div>
                 ) : (
                   <p className="text-4xl font-bold text-gold">
-                    {formatCurrency(product.price)}
+                    {formatCurrency(basePrice)}
                   </p>
+                )}
+                {includeEngraving && (
+                  <div className="mt-3 flex items-center justify-between rounded-lg bg-gold/10 p-3">
+                    <span className="text-sm font-medium text-gray-700">Gravação interna</span>
+                    <span className="text-lg font-bold text-gold">+ {formatCurrency(engravingCost)}</span>
+                  </div>
+                )}
+                {includeEngraving && (
+                  <div className="mt-2 pt-2 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-semibold text-gray-900">Total:</span>
+                      <span className="text-3xl font-bold text-gold">{formatCurrency(finalPrice)}</span>
+                    </div>
+                  </div>
                 )}
                 <p className="mt-2 text-gray-600">
                   ou em até 12x de {calculateInstallment(finalPrice, 12)} sem juros
@@ -323,6 +407,55 @@ export default function ProductDetailPage() {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {/* Size Selection */}
+              {product.availableSizes && product.availableSizes.length > 0 && (
+                <div className="mt-6">
+                  <h2 className="font-heading text-lg font-semibold text-gray-900 mb-3">
+                    Selecione o Tamanho/Aro
+                  </h2>
+                  <div className="grid grid-cols-5 gap-2">
+                    {product.availableSizes.map((size: string) => (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`py-2 px-3 border-2 rounded-lg font-medium transition-colors ${
+                          selectedSize === size
+                            ? 'border-gold bg-gold text-white'
+                            : 'border-gray-300 hover:border-gold'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Engraving Option */}
+              {product.customizable && (
+                <div className="mt-6">
+                  <h2 className="font-heading text-lg font-semibold text-gray-900 mb-3">
+                    Personalização
+                  </h2>
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={includeEngraving}
+                      onChange={(e) => setIncludeEngraving(e.target.checked)}
+                      className="w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold"
+                    />
+                    <span className="text-gray-700">
+                      Adicionar gravação interna <span className="font-semibold text-gold">+ {formatCurrency(product.engravingPrice || 100)}</span>
+                    </span>
+                  </label>
+                  {includeEngraving && (
+                    <p className="mt-2 text-sm text-gray-600">
+                      A gravação será personalizada conforme sua solicitação no WhatsApp
+                    </p>
+                  )}
                 </div>
               )}
 

@@ -6,6 +6,7 @@ import { HeroBanner } from "@/components/layout/hero-banner"
 import { HeroSearch } from "@/components/home/hero-search"
 import { CategoryCards } from "@/components/layout/category-cards"
 import { FeaturedProducts } from "@/components/layout/featured-products"
+import { NewReleases } from "@/components/layout/new-releases"
 import { LuxuryShowcase } from "@/components/layout/luxury-showcase"
 import { Phone, Award, Shield, Heart } from "lucide-react"
 import Link from "next/link"
@@ -28,6 +29,9 @@ export default function Home() {
 
         {/* Featured Products */}
         <FeaturedProducts />
+
+        {/* New Releases */}
+        <NewReleases />
 
         {/* Luxury Showcase Banner */}
         <LuxuryShowcase />

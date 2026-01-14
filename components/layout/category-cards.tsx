@@ -21,6 +21,31 @@ const categoryGradients: Record<string, string> = {
 
 const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://payload-api-production-9a40.up.railway.app'
 
+// Função para extrair ID do YouTube de diferentes formatos de URL
+function getYoutubeVideoId(url: string): string | null {
+  if (!url) return null
+
+  // Formatos suportados:
+  // https://www.youtube.com/watch?v=VIDEO_ID
+  // https://youtu.be/VIDEO_ID
+  // https://www.youtube.com/embed/VIDEO_ID
+
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=)([^&\s]+)/,
+    /(?:youtu\.be\/)([^&\s]+)/,
+    /(?:youtube\.com\/embed\/)([^&\s]+)/,
+  ]
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match && match[1]) {
+      return match[1]
+    }
+  }
+
+  return null
+}
+
 export function CategoryCards() {
   const [categories, setCategories] = useState<any[]>([])
   const { texts } = useSiteTexts()
@@ -28,7 +53,7 @@ export function CategoryCards() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(`${PAYLOAD_API_URL}/api/categories?limit=100`)
+        const res = await fetch(`${PAYLOAD_API_URL}/api/vps-categories`)
         const data = await res.json()
         setCategories(data.docs || [])
       } catch (error) {
@@ -69,29 +94,43 @@ export function CategoryCards() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {categories.map((category: any) => (
-            <Link
-              key={category.id}
-              href={`/produtos?category=${category.slug}`}
-              className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg"
-            >
-              <div className={`h-48 ${categoryGradients[category.slug] || 'bg-gradient-to-br from-beige to-gold-light'} flex items-center justify-center`}>
-                <span className="text-6xl">{categoryIcons[category.slug] || "💍"}</span>
-              </div>
-              <div className="p-6">
-                <h3 className="font-heading text-xl font-semibold text-gray-900 group-hover:text-gold">
-                  {category.name}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600">
-                  {getDescription(category.slug)}
-                </p>
-                <div className="mt-4 flex items-center text-sm font-medium text-gold">
-                  {texts.categoryCards.viewProducts}
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          {categories.map((category: any) => {
+            const videoId = getYoutubeVideoId(category.videoUrl)
+
+            return (
+              <Link
+                key={category._id || category.id}
+                href={`/produtos?category=${category.slug}`}
+                className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg"
+              >
+                <div className={`h-48 ${categoryGradients[category.slug] || 'bg-gradient-to-br from-beige to-gold-light'} flex items-center justify-center relative overflow-hidden`}>
+                  {videoId ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1&controls=1&loop=1&playlist=${videoId}`}
+                      title={category.name}
+                      className="absolute inset-0 w-full h-full"
+                      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <span className="text-6xl">{categoryIcons[category.slug] || "💍"}</span>
+                  )}
                 </div>
-              </div>
-            </Link>
-          ))}
+                <div className="p-6">
+                  <h3 className="font-heading text-xl font-semibold text-gray-900 group-hover:text-gold">
+                    {category.name}
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-600">
+                    {getDescription(category.slug)}
+                  </p>
+                  <div className="mt-4 flex items-center text-sm font-medium text-gold">
+                    {texts.categoryCards.viewProducts}
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>

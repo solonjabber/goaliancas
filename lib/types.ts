@@ -5,6 +5,7 @@ export interface Product {
   slug: string
   description: string
   price: number
+  salePrice?: number
   images: string[]
   category: ProductCategory
   metalType: MetalType
@@ -17,6 +18,8 @@ export interface Product {
   discount?: number
   specifications?: string[]
   customizable?: boolean
+  availableSizes?: string[]
+  engravingPrice?: number
   // Novos campos para busca avançada
   keywords?: string[]
   gender?: ProductGender

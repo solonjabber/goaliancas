@@ -38,6 +38,15 @@ export const Categories: CollectionConfig = {
       label: 'Imagem da Categoria',
     },
     {
+      name: 'videoUrl',
+      type: 'text',
+      label: 'Vídeo YouTube (Opcional)',
+      admin: {
+        description: 'Cole o link completo do vídeo do YouTube. Ex: https://www.youtube.com/watch?v=ABC123 ou https://youtu.be/ABC123',
+        placeholder: 'https://www.youtube.com/watch?v=...',
+      },
+    },
+    {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,
